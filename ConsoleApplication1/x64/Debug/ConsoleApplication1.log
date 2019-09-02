@@ -1,0 +1,4 @@
+﻿  pch.cpp
+  main.cpp
+F:\My Codes\computer-graphics\final_project\ConsoleApplication1\main.cpp(1120,6): warning C4102:  'start': unreferenced label
+LINK : fatal error LNK1104: cannot open file 'glut32.lib'
