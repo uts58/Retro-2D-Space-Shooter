@@ -1,0 +1,7 @@
+# ninja log v5
+46	776	7122815578387477	CMakeFiles/space_shooter.dir/classes/star.cpp.obj	d53d970e7354fee
+1	1620	7122815586838080	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
+1625	2991	7122815600139089	space_shooter.exe	b389f3093737ab76
+4	721	7125183650608462	build.ninja	79c25ddeef476f90
+2	2019	7125183672887569	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
+2021	2910	7125183680294050	space_shooter.exe	b389f3093737ab76
