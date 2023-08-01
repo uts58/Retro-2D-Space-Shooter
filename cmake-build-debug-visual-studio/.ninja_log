@@ -1,7 +1,13 @@
 # ninja log v5
-46	776	7122815578387477	CMakeFiles/space_shooter.dir/classes/star.cpp.obj	d53d970e7354fee
-1	1620	7122815586838080	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
-1625	2991	7122815600139089	space_shooter.exe	b389f3093737ab76
-4	721	7125183650608462	build.ninja	79c25ddeef476f90
-2	2019	7125183672887569	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
-2021	2910	7125183680294050	space_shooter.exe	b389f3093737ab76
+1	1212	7125194301487964	CMakeFiles/space_shooter.dir/classes/star.cpp.obj	d53d970e7354fee
+2	1741	7125194502896194	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
+4	721	7125217559360195	build.ninja	79c25ddeef476f90
+1746	2713	7125194511706207	space_shooter.exe	b389f3093737ab76
+3	382	7125217559360195	build.ninja	79c25ddeef476f90
+1	1203	7125217573296641	CMakeFiles/space_shooter.dir/classes/Star.cpp.obj	d0c7ce03c62fc5d8
+52	1667	7125217577919520	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
+1668	2550	7125217585691452	space_shooter.exe	cae8bbdf23b5a1a3
+1	1848	7125220240253037	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
+1851	2596	7125220246789504	space_shooter.exe	cae8bbdf23b5a1a3
+2	2032	7125220877778725	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
+2035	4012	7125220896456869	space_shooter.exe	cae8bbdf23b5a1a3

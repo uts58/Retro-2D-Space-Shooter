@@ -56,7 +56,7 @@ build CMakeFiles\space_shooter.dir\main.cpp.obj: CXX_COMPILER__space_shooter_uns
   TARGET_COMPILE_PDB = CMakeFiles\space_shooter.dir\
   TARGET_PDB = space_shooter.pdb
 
-build CMakeFiles\space_shooter.dir\classes\star.cpp.obj: CXX_COMPILER__space_shooter_unscanned_Debug C$:\Users\utsha.saha\CLionProjects\space-shooter\classes\star.cpp || cmake_object_order_depends_target_space_shooter
+build CMakeFiles\space_shooter.dir\classes\Star.cpp.obj: CXX_COMPILER__space_shooter_unscanned_Debug C$:\Users\utsha.saha\CLionProjects\space-shooter\classes\Star.cpp || cmake_object_order_depends_target_space_shooter
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -MDd -Zi
   OBJECT_DIR = CMakeFiles\space_shooter.dir
   OBJECT_FILE_DIR = CMakeFiles\space_shooter.dir\classes
@@ -71,7 +71,7 @@ build CMakeFiles\space_shooter.dir\classes\star.cpp.obj: CXX_COMPILER__space_sho
 #############################################
 # Link the executable space_shooter.exe
 
-build space_shooter.exe: CXX_EXECUTABLE_LINKER__space_shooter_Debug CMakeFiles\space_shooter.dir\main.cpp.obj CMakeFiles\space_shooter.dir\classes\star.cpp.obj
+build space_shooter.exe: CXX_EXECUTABLE_LINKER__space_shooter_Debug CMakeFiles\space_shooter.dir\main.cpp.obj CMakeFiles\space_shooter.dir\classes\Star.cpp.obj
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -MDd -Zi
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = irrKlang.lib  freeglut.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
