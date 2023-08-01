@@ -7,6 +7,10 @@
 #include "includes/freeglut/include/GL/glut.h"
 
 #include "classes/Star.cpp"
+#include "classes/Bullet.cpp"
+#include "classes/Enemy.cpp"
+#include "classes/Enemyv2.cpp"
+#include "classes/Life.cpp"
 
 
 using namespace std;
@@ -15,20 +19,22 @@ using namespace irrklang;
 int screen_width = GetSystemMetrics(SM_CXSCREEN);
 int screen_height = GetSystemMetrics(SM_CYSCREEN);
 
+const int arraySize = 1920;
+
 #define n 1000
 int counter = 0;
 int gameState = 0;
-int Health = 20;
+GLfloat Health = 20;
 int c = 0;
 int NOB;                //Number of Bullets
 int NOF = 5;              //Number of enemies per frame
 int NOL = 2;            //NUmber of health per frame
-int enemyX[1920];       //Generates Random X positions for X
+int enemyX[arraySize];       //Generates Random X positions for X
 GLfloat enemySpeed = 5;   // speed at which enemy will fall
 int sco = 0;
 int highScoreForNormal = 0;
 int highScoreForSpeed = 0;
-int bulletSpeed = 25;  //this value will be added to the y of bullet
+GLfloat bulletSpeed = 25;  //this value will be added to the y of bullet
 bool isSpeedMode;
 int speedScore;
 
@@ -48,335 +54,15 @@ string convertHealth(int number) {
     return ss.str();//return a string with the contents of the stream
 }
 
-void drawText(const string& text, GLfloat x, GLfloat y) //draw text
+void drawText(const string &text, GLfloat x, GLfloat y) //draw text
 {
     glRasterPos2f(x, y);
-    for (char i : text) {
+    for (char i: text) {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, (int) i);
     }
 }
 
-
-class Enemy {
-public:
-    GLfloat x{};         // Initial position of x-coordinate of enemy spaceship
-    GLfloat y{};         // Initial position of y-coordinate of enemy spaceship
-    int alive{};  // This variable indicates whether the enemy is alive or not. 0 means alive, 1 means dead
-    GLfloat x2{};        // x2 coordinate used for collision detection
-    GLfloat y2{};        // y2 coordinate used for collision detection
-    GLfloat w2{};        // Width of the object
-    GLfloat h2{};        // Height of the object
-
-    void getCollisionInformation() {
-        x2 = x - 10;
-        w2 = 40;
-        y2 = y + 40;
-        h2 = 50;
-    }
-
-    void init() {
-        x = enemyX[rand() % 1920];
-        y = 1080;
-        alive = 1;
-    }
-
-    void draw() const {
-        glColor3f(0.9, 0.91, 0.98);
-        glBegin(GL_QUADS);
-        glVertex2f(x, y);
-        glVertex2f(x + 20, y);
-        glVertex2f(x + 20, y + 40);
-        glVertex2f(x, y + 40);
-        glEnd();
-
-        glBegin(GL_POLYGON);
-        glVertex2f(x - 10, y + 30);  // Wing 1
-        glVertex2f(x, y + 25);
-        glVertex2f(x, y + 15);
-        glVertex2f(x - 10, y + 20);
-        glEnd();
-
-        glBegin(GL_QUADS);
-        glVertex2f(x + 20, y + 20);
-        glVertex2f(x + 30, y + 15);  // Wing 2
-        glVertex2f(x + 30, y + 25);
-        glVertex2f(x + 20, y + 30);
-        glEnd();
-
-        glColor3f(0, 0, 1);
-        glBegin(GL_POLYGON);
-        glVertex2f(x, y);
-        glVertex2f(x + 10, y - 10);  // Warhead
-        glVertex2f(x + 20, y);
-        glEnd();
-    }
-
-    void move(GLfloat offset) {
-        y -= offset;  // Move the enemy downwards according to the given speed (offset)
-    }
-};
-
-
-class EnemyV2 {
-public:
-    GLfloat x;           //Position initial position of x coordinate of enemy spaceship
-    GLfloat y;           // initial position of y  coordinate of enemy spaceship
-    int alive;          // this variable will whether the enemy is alive not not 0 means alive 1 means dead
-    GLfloat x2;          //this the same x2 coordinate as we have declared earlier but this one will be retrieved for collision detection
-    GLfloat y2;          //same as the above x2 t
-    GLfloat w2;          //width of the object
-    GLfloat h2;          //height of the object
-
-    void getCollisionInformation()   // this function send information about current position
-    {
-        x2 = x - 10;
-        w2 = 40;
-        y2 = y + 40;
-        h2 = 50;
-    }
-
-    void init() {
-        x = enemyX[rand() % 1920];
-        y = 1080;
-        alive = 1;
-    }
-
-
-    void draw() const              //this draws the enemy
-    {
-        glColor3f(1, 0, 0);
-        glBegin(GL_POLYGON);
-        glVertex2f(x - 5, y + 10);
-        glVertex2f(x - 10, y + 30);
-        glVertex2f(x - 10, y + 10);
-
-        glEnd();
-        glBegin(GL_POLYGON);
-        glVertex2f(x + 20, y + 10);
-        glVertex2f(x + 25, y + 30);
-        glVertex2f(x + 25, y + 10);
-        glEnd();
-
-        glColor3f(0, 0, 1);
-
-
-        glBegin(GL_POLYGON);
-        glVertex2f(x, y);
-        glVertex2f(x + 15, y);
-        glVertex2f(x + 20, y + 10);
-        glVertex2f(x + 15, y + 40);
-        glVertex2f(x, y + 40);
-        glVertex2f(x - 5, y + 10);
-
-        //glVertex2f(x+10,y-10);  // warhead
-        //glVertex2f(x+10,y-10);
-        //glVertex2f(x+20,y);
-
-        glEnd();
-
-    }
-
-    void move(GLfloat offset) {
-        y = y - offset;
-    }
-};
-
-class Life {
-public:
-    GLfloat x{};           //Position initial position of x coordinate of enemy spaceship
-    GLfloat y{};           // initial position of y  coordinate of enemy spaceship
-    int alive = 1;          // this variable will whether the enemy is alive not not 0 means alive 1 means dead
-    GLfloat x2{};          //this the same x2 coordinate as we have declared earlier but this one will be retrieved for collision detection
-    GLfloat y2{};          //same as the above x2 t
-    GLfloat w2{};          //width of the object
-    GLfloat h2{};          //height of the object
-
-
-    void getCollisionInformation()   // this function send information about current position
-    {
-        x2 = x - 10;
-        w2 = 40;
-        y2 = y + 40;
-        h2 = 50;
-    }
-
-    void init() {
-        x = enemyX[rand() % 1920];
-        y = 1080;
-        alive = 1;
-    }
-
-
-    void draw() const            //heart
-    {
-        glColor3f(1, 0, 0);
-
-        glBegin(GL_POLYGON);
-        glVertex2f(x, y);
-        glVertex2f(x + 20, y - 25);
-        glVertex2f(x + 20, y + 5);
-        glVertex2f(x + 15, y + 15);
-        glVertex2f(x + 5, y + 15);
-        glVertex2f(x, y + 10);
-
-        glEnd();
-
-        glBegin(GL_POLYGON);
-
-        glVertex2f(x + 20, y - 25);
-        glVertex2f(x + 40, y);
-        glVertex2f(x + 40, y + 10);
-        glVertex2f(x + 35, y + 15);
-        glVertex2f(x + 25, y + 15);
-        glVertex2f(x + 20, y + 5);
-
-        glEnd();
-
-    }
-
-    void move(GLfloat offset) //this function will be descended the enemy according a give speed which is offset
-    {
-        y = y - offset;
-    }
-};
-
-
-class MyShip {
-public:
-    GLfloat x;       //x and y coordinates
-    GLfloat y;
-    int shoot;
-    int alive;    // checks whether alive of not
-    GLfloat x1{};
-    GLfloat y1{};
-    GLfloat w1{};
-    GLfloat h1{};
-
-    MyShip()         //constructor
-    {
-        x = 250;       //initial position
-        y = 40;
-        shoot = 0;
-        alive = 1;      //alive or not
-    }
-
-    void information_for_collision() // info about collision
-    {
-        x1 = x - 10;
-        y1 = 0;
-        w1 = 50;
-        h1 = 60;
-    }
-
-    void move_left(GLfloat offset)     //moves the object left
-    {
-        x = x - offset;
-    }
-
-    void move_right(GLfloat offset)    //right
-    {
-        x = x + offset;
-    }
-
-    void DisplayShip() const {
-        glColor3f(1, 1, 1);
-        glBegin(GL_POLYGON);
-        glVertex2f(x - 20, 0);
-        glVertex2f(x + 15, 10);
-        glVertex2f(x + 15, 25);
-        glEnd();
-
-        glBegin(GL_POLYGON);
-        glVertex2f(x + 50, 0);
-        glVertex2f(x + 15, 10);
-        glVertex2f(x + 15, 25);
-        glEnd();
-
-        glColor3f(1, 0, 0);
-        glBegin(GL_POLYGON);
-        glVertex2f(x - 20, 0);
-        glVertex2f(x - 10, 5);
-        glVertex2f(x - 25, 13);
-        glEnd();
-
-        glBegin(GL_POLYGON);
-        glVertex2f(x + 50, 0);
-        glVertex2f(x + 40, 5);
-        glVertex2f(x + 55, 13);
-        glEnd();
-
-        glColor3f(1, 0, 0);
-        glBegin(GL_POLYGON);
-        glVertex2f(x, 12);
-        glVertex2f(x + 15, 25);
-        glVertex2f(x + 15, 60);
-        glEnd();
-
-        glColor3f(1, 0, 0);
-        glBegin(GL_POLYGON);
-        glVertex2f(x + 30, 12);
-        glVertex2f(x + 15, 25);
-        glVertex2f(x + 15, 60);
-
-        glEnd();
-    }
-
-    void Constructor() //resets the ship object
-    {
-        x = 250;
-        y = 40;
-        shoot = 0;
-        alive = 1;
-    }
-};
-
-class bullet {
-public:
-    GLfloat x{};
-    GLfloat y{};
-    int firing;
-    GLfloat x3{};
-    GLfloat y3{};
-    GLfloat w3{};
-    GLfloat h3{};
-
-    bullet() {
-        firing = 0;
-    }
-
-    void getPosition(MyShip ship)   // takes the position of ship
-    {
-        x = ship.x + 15;
-        y = ship.y + 35;
-    }
-
-    void fire() {
-        firing = 1;
-    }
-
-    void draw() const             //draws the bullet
-    {
-        glColor3f(1, 0, 0);
-        glLineWidth(3);
-        glBegin(GL_LINES);
-        glVertex2f(x, y);
-        glVertex2f(x, y + 10);
-        glEnd();
-    }
-
-    void move(GLfloat offset)   //ascends the bullet
-    {
-        y = y + offset;
-    }
-
-    void ReInit()         //initialize
-    {
-        firing = 0;
-    }
-};
-
-
-bullet b[n];       //instance of bullet object
+Bullet b[n];       //instance of bullet object
 Star s[n];        //star
 MyShip ship;
 Enemy e[5];            //enemy initialization
@@ -453,36 +139,36 @@ void DrawBullet()    //renders bullet
     }
 }
 
-void drawenemy() {
+void DrawEnemy() {
     for (int i = 0; i < NOF; i++) {
         if (e[i].alive)  //as long as the enemy is alive  it will be rendered
         {
-            e[i].draw();             //render the each enemy
+            e[i].draw();             //render the enemy
             e[i].move(enemySpeed);  //enemies will fall at this speed
             if (e[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
             {
-                e[i].init();  //initialize
+                e[i].init(screen_width);  //initialize
             }
         }
         if (e[i].alive == 0) //if the current enemy is dead it will also be initialized
         {
-            e[i].init();
+            e[i].init(screen_width);
         }
     }
 
     for (int i = 0; i < NOF; i++) {
         if (e2[i].alive)  //as long as the enemy is alive  it will be rendered
         {
-            e2[i].draw();             //render the each enemy
+            e2[i].draw();             //render the enemy
             e2[i].move(enemySpeed);  //enemies will fall at this speed
             if (e2[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
             {
-                e2[i].init();  //initialize
+                e2[i].init(screen_width);  //initialize
             }
         }
         if (e2[i].alive == 0) //if the current enemy is dead it will also be initialized
         {
-            e2[i].init();
+            e2[i].init(screen_width);
         }
     }
     for (int i = 0; i < NOL; i++) {
@@ -492,12 +178,12 @@ void drawenemy() {
             l[i].move(enemySpeed);  //enemies will fall at this speed
             if (l[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
             {
-                l[i].init();  //initialize
+                l[i].init(screen_width);  //initialize
             }
         }
         if (l[i].alive == 0) //if the current enemy is dead it will also be initialized
         {
-            l[i].init();
+            l[i].init(screen_width);
         }
     }
 
@@ -653,32 +339,28 @@ void Reinitialization() {
     int i;
     NOF = 5;
     for (i = 0; i < NOF; i++) {
-        e[i].init();
+        e[i].init(screen_width);
     }
-    return;
 }
 
 /////////////////////////////////////////Keyboard/////////////////////////////////////////
 
 void update(int value) {
-
-
     Reinitialization();
     speedScore = sco;
     sco = 0;
     NOB = 0;
     gameState = 2;
     ship.alive = 0;
-
 }
 
-void gamemode(string mode) //gamemode
+void GameMode(const string &mode) //gamemode
 {
     if (mode == "slow") {
-        enemySpeed = 5;
+        enemySpeed = 0.5;
         isSpeedMode = false;
     } else if (mode == "speedy") {
-        enemySpeed = 25;
+        enemySpeed = 5;
         isSpeedMode = true;
         glutTimerFunc(10000, update, 0);
     }
@@ -711,10 +393,10 @@ void keyboard(unsigned char key, int x, int y) {
 
                 gameState = 1;
                 if (isSpeedMode) {
-                    gamemode("speedy");
+                    GameMode("speedy");
                     sco = 0;
                 } else {
-                    gamemode("slow");
+                    GameMode("slow");
                     sco = 0;
                 }
             }
@@ -731,29 +413,27 @@ void keyboard(unsigned char key, int x, int y) {
 
 void mouse(int button, int state, int x, int y) //mouse for menu
 {
-
     if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
         if ((x > 850) && (x < 1100) && (y > 620) && (y < 670)) {
             exit(0);
         } else if ((x > 900) && (x < 1050) && (y > 560) && (y < 600)) {
             gameState = 1;
-            gamemode("speedy");
+            GameMode("speedy");
             Reinitialization();
             NOB = 0;
         } else if ((x > 900) && (x < 1050) && (y > 500) && (y < 540)) {
             gameState = 1;
-            gamemode("slow");
+            GameMode("slow");
             Reinitialization();
             NOB = 0;
         }
     }
 }
 
-void mousedummy(int button, int state, int x, int y) {}
+void MouseDummy(int button, int state, int x, int y) {}
 
-void mouseforgame(int button, int state, int x, int y) //mouse for menu
+void MouseForGame(int button, int state, int x, int y) //mouse for menu
 {
-
     if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
         if (ship.alive) {
             ship.shoot = 1;
@@ -945,7 +625,7 @@ void DrawMenu() //draws menu
 void OverDisplay()                //displays text when game is over
 {
     glutKeyboardFunc(keyboard);
-    glutMouseFunc(mousedummy);
+    glutMouseFunc(MouseDummy);
     glutSetCursor(GLUT_CURSOR_INHERIT);
     if (!isSpeedMode) {
         fstream myfile("highscoreNText.txt", ios_base::in);
@@ -1015,17 +695,17 @@ void display() {
     start:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     ShowStars(0);
-    glutMouseFunc(mouseforgame);
+    glutMouseFunc(MouseForGame);
     glutSetCursor(GLUT_CURSOR_NONE);
     glutKeyboardFunc(keyboard);
     DrawShip();
-    drawenemy();
+    DrawEnemy();
     DrawBullet();
     ship.information_for_collision();
     BulletsVsEnemyCollisionTest();
     CollisionShip();
     DisplayHealth(Health);
-    char score[10] = {0};
+
     string sf = "Score :" + convertInt(sco);
     string ss = "Health :"/* + convertInt(Health)*/;
     drawText(ss, 10, 1050);
@@ -1040,9 +720,6 @@ void display() {
 
     glutPostRedisplay();
 }
-
-
-
 
 
 /////////////////////////////////////////////////////Main Display Function////////////////////////////////////////
@@ -1100,5 +777,6 @@ int main(int argc, char **argv) {
     glutFullScreen();
     engine->play2D("sound.mp3", true);
     glutMainLoop();
+    engine->drop();
     return 0;
 }

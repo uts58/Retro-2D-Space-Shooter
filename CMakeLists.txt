@@ -9,7 +9,14 @@ link_directories(includes/irrKlang/lib/Winx64-visualStudio)
 
 
 add_executable(space_shooter main.cpp
-        classes/Star.cpp)
+        classes/Star.cpp
+        classes/MyShip.cpp
+        classes/Bullet.cpp
+        classes/Bullet.cpp
+        classes/Enemy.cpp
+        classes/Enemy.cpp
+        classes/EnemyV2.cpp
+        classes/Life.cpp)
 
 target_link_libraries(space_shooter PRIVATE irrKlang)
 target_link_libraries(space_shooter PRIVATE freeglut)

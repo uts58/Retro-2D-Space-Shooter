@@ -1,13 +1,17 @@
 # ninja log v5
 1	1212	7125194301487964	CMakeFiles/space_shooter.dir/classes/star.cpp.obj	d53d970e7354fee
-2	1741	7125194502896194	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
-4	721	7125217559360195	build.ninja	79c25ddeef476f90
-1746	2713	7125194511706207	space_shooter.exe	b389f3093737ab76
-3	382	7125217559360195	build.ninja	79c25ddeef476f90
 1	1203	7125217573296641	CMakeFiles/space_shooter.dir/classes/Star.cpp.obj	d0c7ce03c62fc5d8
-52	1667	7125217577919520	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
-1668	2550	7125217585691452	space_shooter.exe	cae8bbdf23b5a1a3
-1	1848	7125220240253037	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
-1851	2596	7125220246789504	space_shooter.exe	cae8bbdf23b5a1a3
-2	2032	7125220877778725	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
-2035	4012	7125220896456869	space_shooter.exe	cae8bbdf23b5a1a3
+146	1875	7126256020464621	CMakeFiles/space_shooter.dir/classes/Bullet.cpp.obj	55c1f29261ab9c02
+2	1208	7126272515534865	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
+44	2013	7126256021834733	CMakeFiles/space_shooter.dir/classes/MyShip.cpp.obj	e7e28bcc0e6fe0fa
+3	382	7126274262478206	build.ninja	79c25ddeef476f90
+1210	2062	7126272522825404	space_shooter.exe	3f0a48889cb5c45f
+41	1451	7126275110998849	CMakeFiles/space_shooter.dir/classes/Enemy.cpp.obj	fe2c847a8947ad62
+179	1455	7126275111008855	CMakeFiles/space_shooter.dir/classes/Life.cpp.obj	e6b33631db83bd4e
+115	1457	7126275111058865	CMakeFiles/space_shooter.dir/classes/EnemyV2.cpp.obj	9ce4ea2b8e160020
+76	1515	7126275111708898	CMakeFiles/space_shooter.dir/classes/Star.cpp.obj	d0c7ce03c62fc5d8
+37	1368	7126277178772503	CMakeFiles/space_shooter.dir/classes/Enemy.cpp.obj	fe2c847a8947ad62
+74	1371	7126277178692496	CMakeFiles/space_shooter.dir/classes/Life.cpp.obj	e6b33631db83bd4e
+114	1388	7126277178792505	CMakeFiles/space_shooter.dir/classes/EnemyV2.cpp.obj	9ce4ea2b8e160020
+2	1529	7126277470276989	CMakeFiles/space_shooter.dir/main.cpp.obj	2ca2a3833de03903
+1532	2243	7126277476387422	space_shooter.exe	26cdc6099dfd2e16

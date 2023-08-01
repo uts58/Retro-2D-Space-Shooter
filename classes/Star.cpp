@@ -1,7 +1,6 @@
 #include "../includes/freeglut/include/GL/glut.h"
 
-class Star
-{
+class Star {
 public:
     float x; // x and y coordinates of the star
     float y;
