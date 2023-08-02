@@ -11,12 +11,11 @@ public:
     GLfloat w1{};
     GLfloat h1{};
 
-    MyShip()         //constructor
+
+    void Reset() //resets the ship object
     {
-        x = 250;       //initial position
-        y = 40;
         shoot = 0;
-        alive = 1;      //alive or not
+        alive = 1;
     }
 
     void information_for_collision() // info about collision
@@ -78,13 +77,5 @@ public:
         glVertex2f(x + 15, 60);
 
         glEnd();
-    }
-
-    void Constructor() //resets the ship object
-    {
-        x = 250;
-        y = 40;
-        shoot = 0;
-        alive = 1;
     }
 };

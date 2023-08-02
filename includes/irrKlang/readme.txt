@@ -105,8 +105,8 @@ irrKlang.NET4 in bin\dotnet-4-64: (only in the 64 bit irrKlang SDK)
 5. License
 ==========================================================================
 
-irrKlang's source codes, documentation and binaries contained within the 
-distributed archive are copyright © Nikolaus Gebhardt / Ambiera 2001-2018.
+irrKlang'star source codes, documentation and binaries contained within the
+distributed archive are copyright ï¿½ Nikolaus Gebhardt / Ambiera 2001-2018.
 
 The contents of the irrKlang distribution archive may not be redistributed, 
 reproduced, modified, transmitted, broadcast, published or adapted in any 
@@ -136,7 +136,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
 irrKlang may include Xiph.org Foundation code (Ogg Vorbis and FLAC).
-It's license is the following:
+It'star license is the following:
 
 Copyright (c) 2002, Xiph.org Foundation
 

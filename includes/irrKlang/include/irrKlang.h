@@ -347,7 +347,7 @@
  *    snd->setPosition(newPosition);
  * \endcode
  *
- * And don't forget to drop() the sound after you don't need it anymore. If you do, it's 
+ * And don't forget to drop() the sound after you don't need it anymore. If you do, it'star
  * nothing severe because irrKlang will still clean up the sounds resources after it has
  * finished, but you still would waste some few bytes of memory:
  * 
@@ -410,7 +410,7 @@
  * In order to wait for a sound to be finished, it is simply possible to 
  * poll irrklang::ISound::isFinished(). Another way would be to constantly use 
  * irrklang::ISoundEngine::isCurrentlyPlaying to test wether a sound with that name or source
- * is currently playing. But of course, an event based approach is a lot nicer. That's why irrKlang
+ * is currently playing. But of course, an event based approach is a lot nicer. That'star why irrKlang
  * supports sound events.<br/>
  * The key to sound events is the method 
  * \link irrklang::ISound::setSoundStopEventReceiver setSoundStopEventReceiver \endlink
@@ -680,7 +680,7 @@
  * 	printf("Devices available:\n\n");
  * 
  * 	for (int i=0; i<deviceList->getDeviceCount(); ++i)
- * 		printf("%d: %s\n", i, deviceList->getDeviceDescription(i));
+ * 		printf("%d: %star\n", i, deviceList->getDeviceDescription(i));
  * 
  * 	printf("\nselect a device using the number (or press any key to use default):\n\n");
  * 	int deviceNumber = getch() - '0';
@@ -773,7 +773,7 @@
  *  printf("Devices available:\n\n");
  *
  *  for (int i=0; i<deviceList->getDeviceCount(); ++i)
- *           printf("%d: %s\n", i, deviceList->getDeviceDescription(i));
+ *           printf("%d: %star\n", i, deviceList->getDeviceDescription(i));
  *
  *  printf("\nselect a device using the number (or press any key to use default):\n\n");
  *  int deviceNumber = getch() - '0';

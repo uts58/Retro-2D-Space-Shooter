@@ -2,12 +2,17 @@
 
 class Star {
 public:
-    float x; // x and y coordinates of the star
-    float y;
 
-    void move() // since stars will be falling, y has to be decreased
+    int screen_width = GetSystemMetrics(SM_CXSCREEN);
+    int screen_height = GetSystemMetrics(SM_CYSCREEN);
+
+    float x = rand() % screen_width;
+    float y = rand() % screen_height;
+
+
+    void move(GLfloat falling_speed) // since stars will be falling, y has to be decreased
     {
-        y = y - 2;
+        y = y - falling_speed;
     }
 
     void show() const // draws the star

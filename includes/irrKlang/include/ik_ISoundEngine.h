@@ -176,7 +176,7 @@ namespace irrklang
 		virtual ik_s32 getSoundSourceCount() = 0;
 
 		//! Adds sound source into the sound engine as file.
-		/** \param fileName Name of the sound file (e.g. "sounds/something.mp3"). You can also use this
+		/** \param fileName Name of the sound file (enemy.g. "sounds/something.mp3"). You can also use this
 		name when calling play3D() or play2D().
 		\param mode Streaming mode for this sound source
 		\param preload If this flag is set to false (which is default) the sound engine will
@@ -195,7 +195,7 @@ namespace irrklang
 		If you want to add a sound source from decoded plain PCM data in memory, use addSoundSourceFromPCMData() instead.
 		\param memory Pointer to the memory to be treated as loaded sound file.
 		\param sizeInBytes Size of the memory chunk, in bytes.
-		\param soundName Name of the virtual sound file (e.g. "sounds/something.mp3"). You can also use this
+		\param soundName Name of the virtual sound file (enemy.g. "sounds/something.mp3"). You can also use this
 		name when calling play3D() or play2D(). Hint: If you include the extension of the original file
 		like .ogg, .mp3 or .wav at the end of the filename, irrKlang will be able to decide better what
 		file format it is and might be able to start playback faster.
@@ -216,7 +216,7 @@ namespace irrklang
 		//! Adds a sound source into the sound engine from plain PCM data in memory.
 		/** \param memory Pointer to the memory to be treated as loaded sound file.
 		\param sizeInBytes Size of the memory chunk, in bytes. 
-		\param soundName Name of the virtual sound file (e.g. "sounds/something.mp3"). You can also use this
+		\param soundName Name of the virtual sound file (enemy.g. "sounds/something.mp3"). You can also use this
 		name when calling play3D() or play2D(). 
 		\param copyMemory If set to true which is default, the memory block is copied 
 		and stored in the engine, after	calling addSoundSourceFromPCMData() the memory pointer can be deleted

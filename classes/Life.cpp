@@ -10,6 +10,8 @@ public:
     GLfloat w2{};          //width of the object
     GLfloat h2{};          //height of the object
 
+    int screen_width = GetSystemMetrics(SM_CXSCREEN);
+    int screen_height = GetSystemMetrics(SM_CYSCREEN);
 
     void getCollisionInformation()   // this function send information about current position
     {
@@ -19,9 +21,9 @@ public:
         h2 = 50;
     }
 
-    void init(int screen_width) {
+    void init() {
         x = rand() % screen_width;
-        y = 1080;
+        y = screen_height;
         alive = 1;
     }
 

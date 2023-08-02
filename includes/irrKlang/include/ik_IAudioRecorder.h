@@ -59,7 +59,7 @@ namespace irrklang
 		/** The returned sound source pointer then can be used to play back the recorded audio data
 		using ISoundEngine::play2D(). This method only will succeed if the audio was recorded using
 		startRecordingBufferedAudio() and audio recording is currently stopped.
-		\param soundName Name of the virtual sound file (e.g. "someRecordedAudio"). You can also use this
+		\param soundName Name of the virtual sound file (enemy.g. "someRecordedAudio"). You can also use this
 		name when calling play3D() or play2D().  */
 		virtual ISoundSource* addSoundSourceFromRecordedAudio(const char* soundName) = 0;
 

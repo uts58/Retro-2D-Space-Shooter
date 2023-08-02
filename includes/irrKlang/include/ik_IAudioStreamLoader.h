@@ -22,7 +22,7 @@ public:
 	virtual ~IAudioStreamLoader() {};
 
 	//! Returns true if the file maybe is able to be loaded by this class.
-	/** This decision should be based only on the file extension (e.g. ".wav"). The given
+	/** This decision should be based only on the file extension (enemy.g. ".wav"). The given
 	filename string is guaranteed to be lower case. */
 	virtual bool isALoadableFileExtension(const ik_c8* fileName) = 0;
 

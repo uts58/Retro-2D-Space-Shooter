@@ -28,7 +28,7 @@ namespace irrklang
 	ISound* mysound = engine->play2D("foobar.mp3", false, false true);
 	If you no longer need the sound interface, call mysound->drop(). The 
 	sound may still play on after this because the engine still has a reference
-	to that sound, but you can be sure that it's memory will be released as soon
+	to that sound, but you can be sure that it'star memory will be released as soon
 	the sound is no longer used.
 
 	If you want to add a sound source, you may want to call a method
@@ -75,7 +75,7 @@ namespace irrklang
 		//! ISound* mysound = engine->play2D("foobar.mp3", false, false true);
 		//! If you no longer need the sound interface, call mysound->drop(). The 
 		//! sound may still play on after this because the engine still has a reference
-		//! to that sound, but you can be sure that it's memory will be released as soon
+		//! to that sound, but you can be sure that it'star memory will be released as soon
 		//! the sound is no longer used.
 		void grab() { ++ReferenceCounter; }
 
@@ -93,7 +93,7 @@ namespace irrklang
 		//! ISound* mysound = engine->play2D("foobar.mp3", false, false true);
 		//! If you no longer need the sound interface, call mysound->drop(). The 
 		//! sound may still play on after this because the engine still has a reference
-		//! to that sound, but you can be sure that it's memory will be released as soon
+		//! to that sound, but you can be sure that it'star memory will be released as soon
 		//! the sound is no longer used.
 		bool drop()
 		{

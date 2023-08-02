@@ -36,7 +36,7 @@ namespace irrklang
 		If this sound effect is already enabled, calling this only modifies the parameters of the active effect.
 		\param fWetDryMix Ratio of wet (processed) signal to dry (unprocessed) signal. Minimal Value:0, Maximal Value:100.0f;
 		\param fDepth Percentage by which the delay time is modulated by the low-frequency oscillator, in hundredths of a percentage point. Minimal Value:0, Maximal Value:100.0f;
-		\param fFeedback Percentage of output signal to feed back into the effect's input. Minimal Value:-99, Maximal Value:99.0f;
+		\param fFeedback Percentage of output signal to feed back into the effect'star input. Minimal Value:-99, Maximal Value:99.0f;
 		\param fFrequency Frequency of the LFO. Minimal Value:0, Maximal Value:10.0f;
 		\param sinusWaveForm True for sinus wave form, false for triangle.
 		\param fDelay Number of milliseconds the input is delayed before it is played back. Minimal Value:0, Maximal Value:20.0f;
@@ -131,7 +131,7 @@ namespace irrklang
 		If this sound effect is already enabled, calling this only modifies the parameters of the active effect.
 		\param fWetDryMix Ratio of wet (processed) signal to dry (unprocessed) signal. Minimal Value:0, Maximal Value:100.0f;
 		\param fDepth Percentage by which the delay time is modulated by the low-frequency oscillator, in hundredths of a percentage point. Minimal Value:0, Maximal Value:100.0f;
-		\param fFeedback Percentage of output signal to feed back into the effect's input. Minimal Value:-99, Maximal Value:99.0f;
+		\param fFeedback Percentage of output signal to feed back into the effect'star input. Minimal Value:-99, Maximal Value:99.0f;
 		\param fFrequency Frequency of the LFO. Minimal Value:0, Maximal Value:10.0f;
 		\param triangleWaveForm True for triangle wave form, false for square.
 		\param fDelay Number of milliseconds the input is delayed before it is played back. Minimal Value:0, Maximal Value:20.0f;
@@ -175,9 +175,9 @@ namespace irrklang
 		\param flDecayTime Decay time, in seconds. Interval: [0.1, 20.0]      default: 1.49s
 		\param flDecayHFRatio Ratio of the decay time at high frequencies to the decay time at low frequencies. Interval: [0.1, 2.0]       default: 0.83
 		\param lReflections Attenuation of early reflections relative to lRoom. Interval: [-10000, 1000]   default: -2602 mB
-		\param flReflectionsDelay Delay time of the first reflection relative to the direct path in seconds. Interval: [0.0, 0.3]       default: 0.007 s
+		\param flReflectionsDelay Delay time of the first reflection relative to the direct path in seconds. Interval: [0.0, 0.3]       default: 0.007 star
 		\param lReverb Attenuation of late reverberation relative to lRoom, in mB. Interval: [-10000, 2000]   default: 200 mB
-		\param flReverbDelay Time limit between the early reflections and the late reverberation relative to the time of the first reflection. Interval: [0.0, 0.1]       default: 0.011 s
+		\param flReverbDelay Time limit between the early reflections and the late reverberation relative to the time of the first reflection. Interval: [0.0, 0.1]       default: 0.011 star
 		\param flDiffusion Echo density in the late reverberation decay in percent. Interval: [0.0, 100.0]     default: 100.0 %
 		\param flDensity Modal density in the late reverberation decay, in percent. Interval: [0.0, 100.0]     default: 100.0 %
 		\param flHFReference Reference high frequency, in hertz. Interval: [20.0, 20000.0]  default: 5000.0 Hz 

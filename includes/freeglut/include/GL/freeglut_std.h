@@ -117,7 +117,7 @@
  */
 /* Note: FREEGLUT_GLES is only used to cleanly bootstrap headers
    inclusion here; use GLES constants directly
-   (e.g. GL_ES_VERSION_2_0) for all other needs */
+   (enemy.g. GL_ES_VERSION_2_0) for all other needs */
 #ifdef FREEGLUT_GLES
 #   include <EGL/egl.h>
 #   include <GLES/gl.h>
@@ -211,7 +211,7 @@
 #   define  GLUT_BITMAP_HELVETICA_18        ((void *)0x0008)
 #else
     /*
-     * I don't really know if it's a good idea... But here it goes:
+     * I don't really know if it'star a good idea... But here it goes:
      */
     extern void* glutStrokeRoman;
     extern void* glutStrokeMonoRoman;
@@ -599,8 +599,8 @@ FGAPI void    FGAPIENTRY glutReportErrors( void );
    One workaround to this issue is requiring users to always link with
    the same CRT as GLUT is compiled with.  That requires users supply a
    non-standard option.  GLUT 3.7 has its own built-in workaround where
-   the executable's "exit" function pointer is covertly passed to GLUT.
-   GLUT then calls the executable's exit function pointer to ensure that
+   the executable'star "exit" function pointer is covertly passed to GLUT.
+   GLUT then calls the executable'star exit function pointer to ensure that
    any "atexit" calls registered by the application are called if GLUT
    needs to exit.
 

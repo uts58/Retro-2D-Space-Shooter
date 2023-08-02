@@ -10,8 +10,8 @@ For more information on freeglut, visit http://freeglut.sourceforge.net/.
 Installation
 
 Create a folder on your PC which is readable by all users, for example
-“C:\Program Files\Common Files\MSVC\freeglut\” on a typical Windows system. Copy
-the “lib\” and “include\” folders from this zip archive to that location.
+ï¿½C:\Program Files\Common Files\MSVC\freeglut\ï¿½ on a typical Windows system. Copy
+the ï¿½lib\ï¿½ and ï¿½include\ï¿½ folders from this zip archive to that location.
 
 The appropriate freeglut DLL can either be placed in the same folder as your
 application, or can be installed in a system-wide folder which appears in your
@@ -22,43 +22,43 @@ bit DLL, as they are not interchangeable.
 Compiling 32 bit Applications
 
 To create a 32 bit freeglut application, create a new Win32 C++ project in MSVC.
-From the “Win32 Application Wizard”, choose a “Windows application”, check the
-“Empty project” box, and submit.
+From the ï¿½Win32 Application Wizardï¿½, choose a ï¿½Windows applicationï¿½, check the
+ï¿½Empty projectï¿½ box, and submit.
 
-You’ll now need to configure the compiler and linker settings. Open up the
-project properties, and select “All Configurations” (this is necessary to ensure
+Youï¿½ll now need to configure the compiler and linker settings. Open up the
+project properties, and select ï¿½All Configurationsï¿½ (this is necessary to ensure
 our changes are applied for both debug and release builds). Open up the
-“general” section under “C/C++”, and configure the “include\” folder you created
-above as an “Additional Include Directory”. If you have more than one GLUT
-package which contains a “glut.h” file, it’s important to ensure that the
+ï¿½generalï¿½ section under ï¿½C/C++ï¿½, and configure the ï¿½include\ï¿½ folder you created
+above as an ï¿½Additional Include Directoryï¿½. If you have more than one GLUT
+package which contains a ï¿½glut.hï¿½ file, itï¿½star important to ensure that the
 freeglut include folder appears above all other GLUT include folders.
 
-Now open up the “general” section under “Linker”, and configure the “lib\”
-folder you created above as an “Additional Library Directory”. A freeglut
-application depends on the import libraries “freeglut.lib” and “opengl32.lib”,
-which can be configured under the “Input” section. However, it shouldn’t be
+Now open up the ï¿½generalï¿½ section under ï¿½Linkerï¿½, and configure the ï¿½lib\ï¿½
+folder you created above as an ï¿½Additional Library Directoryï¿½. A freeglut
+application depends on the import libraries ï¿½freeglut.libï¿½ and ï¿½opengl32.libï¿½,
+which can be configured under the ï¿½Inputï¿½ section. However, it shouldnï¿½t be
 necessary to explicitly state these dependencies, since the freeglut headers
-handle this for you. Now open the “Advanced” section, and enter “mainCRTStartup”
-as the “Entry Point” for your application. This is necessary because GLUT
-applications use “main” as the application entry point, not “WinMain”—without it
-you’ll get an undefined reference when you try to link your application.
+handle this for you. Now open the ï¿½Advancedï¿½ section, and enter ï¿½mainCRTStartupï¿½
+as the ï¿½Entry Pointï¿½ for your application. This is necessary because GLUT
+applications use ï¿½mainï¿½ as the application entry point, not ï¿½WinMainï¿½ï¿½without it
+youï¿½ll get an undefined reference when you try to link your application.
 
-That’s all of your project properties configured, so you can now add source
+Thatï¿½star all of your project properties configured, so you can now add source
 files to your project and build the application. If you want your application to
-be compatible with GLUT, you should “#include <GL/glut.h>”. If you want to use
-freeglut specific extensions, you should “#include <GL/freeglut.h>” instead.
+be compatible with GLUT, you should ï¿½#include <GL/glut.h>ï¿½. If you want to use
+freeglut specific extensions, you should ï¿½#include <GL/freeglut.h>ï¿½ instead.
 
-Don’t forget to either include the freeglut DLL when distributing applications,
-or provide your users with some method of obtaining it if they don’t already
+Donï¿½t forget to either include the freeglut DLL when distributing applications,
+or provide your users with some method of obtaining it if they donï¿½t already
 have it!
 
 
 Compiling 64 bit Applications
 
 Building 64 bit applications is almost identical to building 32 bit applications.
-When you use the configuration manager to add the x64 platform, it’s easiest to
-copy the settings from the Win32 platform. If you do so, it’s then only necessary
-to change the “Additional Library Directories” configuration so that it
+When you use the configuration manager to add the x64 platform, itï¿½star easiest to
+copy the settings from the Win32 platform. If you do so, itï¿½star then only necessary
+to change the ï¿½Additional Library Directoriesï¿½ configuration so that it
 references the directory containing the 64 bit import library rather
 than the 32 bit one.
 
@@ -77,30 +77,30 @@ with MSVC). A lot of people try to build very complex applications after
 installing these packages, and often the error is with the application code or
 other library dependencies rather than freeglut.
 
-If you still can’t get it working after trying to compile a simple application,
+If you still canï¿½t get it working after trying to compile a simple application,
 then please get in touch via http://www.transmissionzero.co.uk/contact/,
-providing as much detail as you can. Please don’t complain to the freeglut guys
-unless you’re sure it’s a freeglut bug, and have reproduced the issue after
-compiling freeglut from the latest SVN version—if that’s still the case, I’m
+providing as much detail as you can. Please donï¿½t complain to the freeglut guys
+unless youï¿½re sure itï¿½star a freeglut bug, and have reproduced the issue after
+compiling freeglut from the latest SVN versionï¿½if thatï¿½star still the case, Iï¿½m
 sure they would appreciate a bug report or a patch.
 
 
 Changelog
 
-2015–07–22: Release 3.0.0-2.mp
+2015ï¿½07ï¿½22: Release 3.0.0-2.mp
 
-  • Modified the freeglut_std.h file so that it doesn’t try to link against the
+  ï¿½ Modified the freeglut_std.h file so that it doesnï¿½t try to link against the
     freeglutd.lib import library.
 
-2015–03–15: Release 3.0.0-1.mp
+2015ï¿½03ï¿½15: Release 3.0.0-1.mp
 
-  • First 3.0.0 MSVC release. I’ve built the package using Visual Studio 2013,
-    and the only change I’ve made is to the DLL version resource—I’ve changed
+  ï¿½ First 3.0.0 MSVC release. Iï¿½ve built the package using Visual Studio 2013,
+    and the only change Iï¿½ve made is to the DLL version resourceï¿½Iï¿½ve changed
     the description so that my MinGW and MSVC builds are distinguishable from
     each other (and other builds) using Windows Explorer.
 
 
 Transmission Zero
-2015–07–22
+2015ï¿½07ï¿½22
 
 http://www.transmissionzero.co.uk/

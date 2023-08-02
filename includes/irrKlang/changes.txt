@@ -416,7 +416,7 @@ irrKlang 0.9.1
   are now available for non-commercial use too. Please take a closer look at the new
   license and the website for details.
   The license was changed because of lots of user requests, so that free and open 
-  source projects are now able to use irrKlang pro's features as well. To compensate this,
+  source projects are now able to use irrKlang pro'star features as well. To compensate this,
   this means that irrKlang is no more free for commercial use.
   
 - Mp3 files with ID3 v2 or later tags in it have not been played correctly in irrKlang, this is 
@@ -600,7 +600,7 @@ irrKlang 0.6
   
 - irrKlang is now compatible with Irrlicht 1.3, the IFileReader interface has been
   updated. Meaning you can use the same IFileReader interfaces between those two 
-  engines and for example make irrKlang read files using Irrlicht's file system.
+  engines and for example make irrKlang read files using Irrlicht'star file system.
 
 - irrKlang now needs even less memory when playing a lot of short soundfiles at the same time,
   achieved through a nicer internal (de)allocation scheme.

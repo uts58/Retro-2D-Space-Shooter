@@ -27,9 +27,8 @@ int gameState = 0;
 GLfloat Health = 20;
 int c = 0;
 int NOB;                //Number of Bullets
-int NOF = 5;              //Number of enemies per frame
-int NOL = 2;            //NUmber of health per frame
-int enemyX[arraySize];       //Generates Random X positions for X
+const int NOF = 5;              //Number of enemies per frame
+const int NOL = 2;            //NUmber of health per frame
 GLfloat enemySpeed = 5;   // speed at which enemy will fall
 int sco = 0;
 int highScoreForNormal = 0;
@@ -37,7 +36,7 @@ int highScoreForSpeed = 0;
 GLfloat bulletSpeed = 25;  //this value will be added to the y of bullet
 bool isSpeedMode;
 int speedScore;
-
+GLfloat falling_speed; //star falling speed for different modes
 
 ISoundEngine *engine = createIrrKlangDevice();
 
@@ -47,12 +46,6 @@ string convertInt(int number) {
     return ss.str();
 }
 
-string convertHealth(int number) {
-    stringstream ss;//create a stringstream
-    Health = Health - 1;
-    ss << Health;//add number to the stream
-    return ss.str();//return a string with the contents of the stream
-}
 
 void drawText(const string &text, GLfloat x, GLfloat y) //draw text
 {
@@ -62,33 +55,33 @@ void drawText(const string &text, GLfloat x, GLfloat y) //draw text
     }
 }
 
-Bullet b[n];       //instance of bullet object
-Star s[n];        //star
+Bullet bullet[n];       //instance of bullet object
+Star star[n];        //star
 MyShip ship;
-Enemy e[5];            //enemy initialization
-EnemyV2 e2[5];        //enemy initialization
-Life l[2];            //life
+Enemy enemy[NOF];            //enemy initialization
+EnemyV2 enemyV2[NOF];        //enemy initialization
+Life life[NOL];            //life
 
 void ShowStars(int x)  //renders the start;
 {
     int i;
     if (x == 0) {
         for (i = 0; i < n; i++) {
-            if (s[i].y >= 0) {
-                s[i].show();    //render each object
-                s[i].move();    //moves starts
+            if (star[i].y >= 0) {
+                star[i].show();    //render each object
+                star[i].move(falling_speed);    //moves starts
             } else {
-                s[i].y = 1080;     //initial y position 500
-                s[i].x = rand() % 1920; //initial x position
+                star[i].y = 1080;     //initial y position 500
+                star[i].x = rand() % 1920; //initial x position
             }
         }
     } else if (x == 1) {
         for (i = 0; i < n; i++) {
-            if (s[i].y >= 0) {
-                s[i].show();    //render each object
+            if (star[i].y >= 0) {
+                star[i].show();    //render each object
             } else {
-                s[i].y = 1080;     //initial y position 500
-                s[i].x = rand() % 1920; //initial x position
+                star[i].y = 1080;     //initial y position 500
+                star[i].x = rand() % 1920; //initial x position
             }
         }
     }
@@ -98,8 +91,8 @@ void ShowStars(int x)  //renders the start;
 void FireBulletsIfShot() {
     if (ship.shoot)                 //when ship.ship=1
     {
-        b[NOB - 1].fire();       //sets firing of bullet into 1
-        b[NOB - 1].getPosition(ship); //collects the current x position of ship
+        bullet[NOB - 1].fire();       //sets firing of bullet into 1
+        bullet[NOB - 1].getPosition(ship); //collects the current x position of ship
         ship.shoot = 0;         //sets the shoot variable of ship into 0
     }
 }
@@ -114,9 +107,10 @@ void DrawShip()       //renders the ship object
 }
 
 /////////////////////////////////////////////Move Object with mouse////////////////////////////////////////
-void move(int x, int y)  //takes the current position of mouse and sets the ship according to that
+void MoveShipWithMouse(int x, int y)  //takes the current position of mouse and sets the ship according to that
 {
     ship.x = x;
+    ship.y = y;
     glutPostRedisplay();
 }
 
@@ -124,12 +118,12 @@ void DrawBullet()    //renders bullet
 {
     int i;
     for (i = 0; i < NOB; i++) {
-        if (b[i].firing) {
-            b[i].draw(); //renders
-            b[i].move(bulletSpeed); //move
+        if (bullet[i].firing) {
+            bullet[i].draw(); //renders
+            bullet[i].move(bulletSpeed); //move
         }
-        if (b[i].y > 1080) {
-            b[i].ReInit();  //resets the bullet object when it goes beyond the screen
+        if (bullet[i].y > 1080) {
+            bullet[i].ReInit();  //resets the bullet object when it goes beyond the screen
 
         }
     }
@@ -141,49 +135,49 @@ void DrawBullet()    //renders bullet
 
 void DrawEnemy() {
     for (int i = 0; i < NOF; i++) {
-        if (e[i].alive)  //as long as the enemy is alive  it will be rendered
+        if (enemy[i].alive)  //as long as the enemy is alive  it will be rendered
         {
-            e[i].draw();             //render the enemy
-            e[i].move(enemySpeed);  //enemies will fall at this speed
-            if (e[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
+            enemy[i].draw();             //render the enemy
+            enemy[i].move(enemySpeed);  //enemies will fall at this speed
+            if (enemy[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
             {
-                e[i].init(screen_width);  //initialize
+                enemy[i].init();  //initialize
             }
         }
-        if (e[i].alive == 0) //if the current enemy is dead it will also be initialized
+        if (enemy[i].alive == 0) //if the current enemy is dead it will also be initialized
         {
-            e[i].init(screen_width);
+            enemy[i].init();
         }
     }
 
     for (int i = 0; i < NOF; i++) {
-        if (e2[i].alive)  //as long as the enemy is alive  it will be rendered
+        if (enemyV2[i].alive)  //as long as the enemy is alive  it will be rendered
         {
-            e2[i].draw();             //render the enemy
-            e2[i].move(enemySpeed);  //enemies will fall at this speed
-            if (e2[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
+            enemyV2[i].draw();             //render the enemy
+            enemyV2[i].move(enemySpeed);  //enemies will fall at this speed
+            if (enemyV2[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
             {
-                e2[i].init(screen_width);  //initialize
+                enemyV2[i].init();  //initialize
             }
         }
-        if (e2[i].alive == 0) //if the current enemy is dead it will also be initialized
+        if (enemyV2[i].alive == 0) //if the current enemy is dead it will also be initialized
         {
-            e2[i].init(screen_width);
+            enemyV2[i].init();
         }
     }
     for (int i = 0; i < NOL; i++) {
-        if (l[i].alive)  //as long as the enemy is alive  it will be rendered
+        if (life[i].alive)  //as long as the enemy is alive  it will be rendered
         {
-            l[i].draw();             //render the each enemy
-            l[i].move(enemySpeed);  //enemies will fall at this speed
-            if (l[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
+            life[i].draw();             //render the enemy
+            life[i].move(enemySpeed);  //enemies will fall at this speed
+            if (life[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
             {
-                l[i].init(screen_width);  //initialize
+                life[i].init();  //initialize
             }
         }
-        if (l[i].alive == 0) //if the current enemy is dead it will also be initialized
+        if (life[i].alive == 0) //if the current enemy is dead it will also be initialized
         {
-            l[i].init(screen_width);
+            life[i].init();
         }
     }
 
@@ -239,35 +233,34 @@ void DisplayHealth(GLfloat health) {
     glEnd();
 
     glFlush();
-    //glutSwapBuffers();
 }
 
 ////////////////////////Collision detection of enemy with space ship/////////////////////////////////////
 void CollisionShip() {
     for (int i = 0; i < NOF; i++) {
-        e[i].getCollisionInformation();
+        enemy[i].getCollisionInformation();
         ship.information_for_collision();
 
-        if ((ship.x1 < (e[i].x2 + e[i].w2)) && (e[i].x2 < ship.x1 + ship.w1) &&
-            ((ship.y1 + ship.h1 == e[i].y2 - e[i].h2))) {
+        if ((ship.x1 < (enemy[i].x2 + enemy[i].w2)) && (enemy[i].x2 < ship.x1 + ship.w1) &&
+            ((ship.y1 + ship.h1 == enemy[i].y2 - enemy[i].h2))) {
             Health = Health - 5;
         }
     }
     for (int i = 0; i < NOF; i++) {
-        e2[i].getCollisionInformation();
+        enemyV2[i].getCollisionInformation();
         ship.information_for_collision();
 
-        if ((ship.x1 < (e2[i].x2 + e2[i].w2)) && (e2[i].x2 < ship.x1 + ship.w1) &&
-            ((ship.y1 + ship.h1 == e2[i].y2 - e2[i].h2))) {
+        if ((ship.x1 < (enemyV2[i].x2 + enemyV2[i].w2)) && (enemyV2[i].x2 < ship.x1 + ship.w1) &&
+            ((ship.y1 + ship.h1 == enemyV2[i].y2 - enemyV2[i].h2))) {
             Health = Health - 5;
         }
     }
     for (int i = 0; i < NOL; i++) {
-        l[i].getCollisionInformation();
+        life[i].getCollisionInformation();
         ship.information_for_collision();
 
-        if ((ship.x1 < (l[i].x2 + l[i].w2)) && (l[i].x2 < ship.x1 + ship.w1) &&
-            ((ship.y1 + ship.h1 == l[i].y2 - l[i].h2))) {
+        if ((ship.x1 < (life[i].x2 + life[i].w2)) && (life[i].x2 < ship.x1 + ship.w1) &&
+            ((ship.y1 + ship.h1 == life[i].y2 - life[i].h2))) {
             if (Health < 20) {
                 Health = Health + 5;
             }
@@ -280,14 +273,15 @@ void CollisionShip() {
 void BulletsVsEnemyCollisionTest() {
     for (int i = 0; i < NOB; i++) {
         for (int j = 0; j < NOF; j++) {
-            e[j].getCollisionInformation();
-            if ((e[j].x2 <= b[i].x) && (b[i].x <= (e[j].x2 + e[j].w2)) && (e[j].alive) && (e[j].y2 <= b[i].y + 20) &&
-                (b[i].y < 1050)) {
-                DestroyAnimation(b[i].x + 3, b[i].y + 3, 10);
-                e[j].alive = 0;
-                b[i].firing = 0;
-                b[i].x = 0;
-                b[i].y = 0;
+            enemy[j].getCollisionInformation();
+            if ((enemy[j].x2 <= bullet[i].x) && (bullet[i].x <= (enemy[j].x2 + enemy[j].w2)) && (enemy[j].alive) &&
+                (enemy[j].y2 <= bullet[i].y + 20) &&
+                (bullet[i].y < 1050)) {
+                DestroyAnimation(bullet[i].x + 3, bullet[i].y + 3, 10);
+                enemy[j].alive = 0;
+                bullet[i].firing = 0;
+                bullet[i].x = 0;
+                bullet[i].y = 0;
                 sco += 1;
                 engine->play2D("explosion1.wav");
             }
@@ -297,49 +291,47 @@ void BulletsVsEnemyCollisionTest() {
     for (int i = 0; i < NOB; i++) {
 
         for (int j = 0; j < NOF; j++) {
-            e2[j].getCollisionInformation();
-            if ((e2[j].x2 <= b[i].x) && (b[i].x <= (e2[j].x2 + e2[j].w2)) && (e2[j].alive) &&
-                (e2[j].y2 <= b[i].y + 20) && (b[i].y < 1050)) {
-                DestroyAnimation(b[i].x, b[i].y, 10);
-                e2[j].alive = 0;
-                b[i].firing = 0;
-                b[i].x = 0;
-                b[i].y = 0;
+            enemyV2[j].getCollisionInformation();
+            if ((enemyV2[j].x2 <= bullet[i].x) && (bullet[i].x <= (enemyV2[j].x2 + enemyV2[j].w2)) &&
+                (enemyV2[j].alive) &&
+                (enemyV2[j].y2 <= bullet[i].y + 20) && (bullet[i].y < 1050)) {
+                DestroyAnimation(bullet[i].x, bullet[i].y, 10);
+                enemyV2[j].alive = 0;
+                bullet[i].firing = 0;
+                bullet[i].x = 0;
+                bullet[i].y = 0;
                 sco += 2;
                 engine->play2D("explosion2.mp3");
 
             }
         }
     }
-    //for (int i = 0; i < NOL; i++)
-    //{
+    for (int i = 0; i < NOL; i++)
+    {
 
-    //	for (int j = 0; j < NOL; j++) {
-    //		l[j].getCollsionInformation();
-    //		if ((l[j].x2 <= b[i].x) && (b[i].x <= (l[j].x2 + l[j].w2)) && (l[j].alive) && (l[j].y2 <= b[i].y + 20) && (b[i].y < 1050))
-    //		{
-    //			DestroyAnimation(b[i].x, b[i].y, 10);
-    //			l[j].alive = 0;
-    //			b[i].firing = 0;
-    //			b[i].x = 0;
-    //			b[i].y = 0;
-    //			sco += 2;
-    //			engine->play2D("explosion1.wav");
-
-    //		}
-    //	}
-    //}
+    	for (int j = 0; j < NOL; j++) {
+    		life[j].getCollisionInformation();
+    		if ((life[j].x2 <= bullet[i].x) && (bullet[i].x <= (life[j].x2 + life[j].w2)) && (life[j].alive) && (life[j].y2 <= bullet[i].y + 20) && (bullet[i].y < 1050))
+    		{
+    			DestroyAnimation(bullet[i].x, bullet[i].y, 10);
+    			life[j].alive = 0;
+    			bullet[i].firing = 0;
+    			bullet[i].x = 0;
+    			bullet[i].y = 0;
+    			sco += 2;
+    			engine->play2D("life.wav");
+    		}
+    	}
+    }
 }
 
 
 void Reinitialization() {
-    ship.Constructor();
+    ship.Reset();
     Health = 20;
-    //sco = 0;
     int i;
-    NOF = 5;
     for (i = 0; i < NOF; i++) {
-        e[i].init(screen_width);
+        enemy[i].init();
     }
 }
 
@@ -357,11 +349,13 @@ void update(int value) {
 void GameMode(const string &mode) //gamemode
 {
     if (mode == "slow") {
-        enemySpeed = 0.5;
+        enemySpeed = 0.1;
+        falling_speed = 0.5;
         isSpeedMode = false;
     } else if (mode == "speedy") {
-        enemySpeed = 5;
+        enemySpeed = 1;
         isSpeedMode = true;
+        falling_speed = 1;
         glutTimerFunc(10000, update, 0);
     }
 }
@@ -561,8 +555,8 @@ void DrawMenu() //draws menu
     string p3 = ": +5 health";
 
     string note1 = "SLOW: Normal mode!";
-    string note2 = "SPEEDY: Kill 'enemy all in 1 min! No health penalty!";
-    string instruction = "Instruction: Press 'F' to shoot, move mouse to controll ship ";
+    string note2 = "SPEEDY: Un-alive most enemy in 10 Second! No health penalty!";
+    string instruction = "Instruction: Press 'F' to shoot, move mouse to control ship ";
     char quit[6] = "QUIT";
     glColor3f(1.0, 0.0, 0.0);
     drawText(line, 850, 680);
@@ -622,77 +616,68 @@ void DrawMenu() //draws menu
 }
 
 
-void OverDisplay()                //displays text when game is over
+void OverDisplay() //displays text when game is over
 {
     glutKeyboardFunc(keyboard);
     glutMouseFunc(MouseDummy);
     glutSetCursor(GLUT_CURSOR_INHERIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    string text1 = "GAME OVER";
+    string text3 = "Press R to restart";
+    ShowStars(true);
+    glColor3f(1, 0, 0);
+    drawText(text1, 900, 600);
+
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(840 + 50, 550);
+    glVertex2f(1020 + 50, 550);
+    glVertex2f(1020 + 50, 650);
+    glVertex2f(840 + 50, 650);
+    glEnd();
+
+    string text2;
+    string highscoreText;
     if (!isSpeedMode) {
         fstream myfile("highscoreNText.txt", ios_base::in);
         myfile >> highScoreForNormal;
+        myfile.close();
+
         if (sco > highScoreForNormal) {
             fstream myfile("highscoreNText.txt", ios_base::out);
             myfile << convertInt(sco) << endl;
             myfile.close();
-        } else {
-            myfile.close();
+            highScoreForNormal = sco;
         }
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        string text1 = "GAME OVER";
-        string text2 = "You Scored " + convertInt(sco);
-        string highscoreNText = "High Score for Normal: " + convertInt(highScoreForNormal);
-        string text3 = "Press R to restart";
-        ShowStars(1);
-        glColor3f(1, 0, 0);
-        drawText(text1, 900, 600);
-        glBegin(GL_LINE_LOOP);
-        glVertex2f(840 + 50, 550);
-        glVertex2f(1020 + 50, 550);
-        glVertex2f(1020 + 50, 650);
-        glVertex2f(840 + 50, 650);
-        glEnd();
-        drawText(text2, 910, 510);
-        drawText(highscoreNText, 865, 470);
-        drawText(text3, 895, 430);
-        //glRasterPos2f(660, 600);
-        glFlush();
-        glutSwapBuffers();
+
+        text2 = "You Scored " + convertInt(sco);
+        highscoreText = "High Score for Normal: " + convertInt(highScoreForNormal);
     } else {
         fstream myfile("highscoreSText.txt", ios_base::in);
         myfile >> highScoreForSpeed;
+        myfile.close();
+
         if (speedScore > highScoreForSpeed) {
             fstream myfile("highscoreSText.txt", ios_base::out);
             myfile << convertInt(speedScore) << endl;
             myfile.close();
-        } else {
-            myfile.close();
+            highScoreForSpeed = speedScore;
         }
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        string text1 = "GAME OVER";
-        string text2 = "You Scored " + convertInt(speedScore);
-        string highscoreSText = "High Score for Speed: " + convertInt(highScoreForSpeed);
-        string text3 = "Press R to restart";
-        ShowStars(1);
-        glColor3f(1, 0, 0);
-        drawText(text1, 900, 600);
-        glBegin(GL_LINE_LOOP);
-        glVertex2f(840 + 50, 550);
-        glVertex2f(1020 + 50, 550);
-        glVertex2f(1020 + 50, 650);
-        glVertex2f(840 + 50, 650);
-        glEnd();
-        drawText(text2, 910, 510);
-        drawText(highscoreSText, 865, 470);
-        drawText(text3, 895, 430);
-        //glRasterPos2f(660, 600);
-        glFlush();
-        glutSwapBuffers();
+
+        text2 = "You Scored " + convertInt(speedScore);
+        highscoreText = "High Score for Speed: " + convertInt(highScoreForSpeed);
     }
 
+    drawText(text2, 910, 510);
+    drawText(highscoreText, 865, 470);
+    drawText(text3, 895, 430);
+
+    glFlush();
+    glutSwapBuffers();
 }
 
+
 void display() {
-    start:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     ShowStars(0);
     glutMouseFunc(MouseForGame);
@@ -725,6 +710,11 @@ void display() {
 /////////////////////////////////////////////////////Main Display Function////////////////////////////////////////
 
 void loop() {
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glPointSize(4.0);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(-25, 1960.0, 0, 1080.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     switch (gameState) {
         case 0:
@@ -743,37 +733,14 @@ void loop() {
 }
 
 
-void myinit() {
-    int i;
-    int inc = 10;
-    for (i = 0; i < n; i++) {
-        s[i].x = rand() % 1920;
-        s[i].y = rand() % 1080;
-    }
-
-    for (i = 0; i < 1920; i++) {
-        enemyX[i] = inc;
-        inc++;
-    }
-
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glPointSize(4.0);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(-25, 1960.0, 0, 1080.0);
-    //gluOrtho2D(0, 500, 0, 500);
-}
-
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    //glutInitWindowSize(500, 500);
     glutInitWindowPosition(0, 0);
     glutCreateWindow("2D Space Shooter");
     glutDisplayFunc(loop);
-    glutPassiveMotionFunc(move);
+    glutPassiveMotionFunc(MoveShipWithMouse);
 
-    myinit();
     glutFullScreen();
     engine->play2D("sound.mp3", true);
     glutMainLoop();
