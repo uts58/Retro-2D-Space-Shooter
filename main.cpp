@@ -19,8 +19,6 @@ using namespace irrklang;
 int screen_width = GetSystemMetrics(SM_CXSCREEN);
 int screen_height = GetSystemMetrics(SM_CYSCREEN);
 
-const int arraySize = 1920;
-
 #define n 1000
 int counter = 0;
 int gameState = 0;
@@ -62,30 +60,18 @@ Enemy enemy[NOF];            //enemy initialization
 EnemyV2 enemyV2[NOF];        //enemy initialization
 Life life[NOL];            //life
 
-void ShowStars(int x)  //renders the start;
+void ShowStars(bool moveStars)  //renders the start;
 {
-    int i;
-    if (x == 0) {
-        for (i = 0; i < n; i++) {
-            if (star[i].y >= 0) {
-                star[i].show();    //render each object
+    for (int i = 0; i < n; i++) {
+        if (star[i].y >= 0) {
+            star[i].show();    //render each object
+            if (moveStars)
                 star[i].move(falling_speed);    //moves starts
-            } else {
-                star[i].y = 1080;     //initial y position 500
-                star[i].x = rand() % 1920; //initial x position
-            }
-        }
-    } else if (x == 1) {
-        for (i = 0; i < n; i++) {
-            if (star[i].y >= 0) {
-                star[i].show();    //render each object
-            } else {
-                star[i].y = 1080;     //initial y position 500
-                star[i].x = rand() % 1920; //initial x position
-            }
+        } else {
+            star[i].y = 1080;     //initial y position 500
+            star[i].x = rand() % 1920; //initial x position
         }
     }
-
 }
 
 void FireBulletsIfShot() {
@@ -104,6 +90,8 @@ void DrawShip()       //renders the ship object
         ship.DisplayShip(); //it will render the ship object
     }
     FireBulletsIfShot(); //if ship.shot is 1 it sets the bullet ready to shot
+    FireBulletsIfShot(); //if ship.shot is 1 it sets the bullet ready to shot
+
 }
 
 /////////////////////////////////////////////Move Object with mouse////////////////////////////////////////
@@ -276,8 +264,8 @@ void BulletsVsEnemyCollisionTest() {
             enemy[j].getCollisionInformation();
             if ((enemy[j].x2 <= bullet[i].x) && (bullet[i].x <= (enemy[j].x2 + enemy[j].w2)) && (enemy[j].alive) &&
                 (enemy[j].y2 <= bullet[i].y + 20) &&
-                (bullet[i].y < 1050)) {
-                DestroyAnimation(bullet[i].x + 3, bullet[i].y + 3, 10);
+                (bullet[i].y < 1080)) {
+                DestroyAnimation(bullet[i].x + 3, bullet[i].y + 3, 20);
                 enemy[j].alive = 0;
                 bullet[i].firing = 0;
                 bullet[i].x = 0;
@@ -289,13 +277,12 @@ void BulletsVsEnemyCollisionTest() {
     }
 
     for (int i = 0; i < NOB; i++) {
-
         for (int j = 0; j < NOF; j++) {
             enemyV2[j].getCollisionInformation();
             if ((enemyV2[j].x2 <= bullet[i].x) && (bullet[i].x <= (enemyV2[j].x2 + enemyV2[j].w2)) &&
                 (enemyV2[j].alive) &&
-                (enemyV2[j].y2 <= bullet[i].y + 20) && (bullet[i].y < 1050)) {
-                DestroyAnimation(bullet[i].x, bullet[i].y, 10);
+                (enemyV2[j].y2 <= bullet[i].y + 20) && (bullet[i].y < 1080)) {
+                DestroyAnimation(bullet[i].x, bullet[i].y, 20);
                 enemyV2[j].alive = 0;
                 bullet[i].firing = 0;
                 bullet[i].x = 0;
@@ -306,22 +293,20 @@ void BulletsVsEnemyCollisionTest() {
             }
         }
     }
-    for (int i = 0; i < NOL; i++)
-    {
-
-    	for (int j = 0; j < NOL; j++) {
-    		life[j].getCollisionInformation();
-    		if ((life[j].x2 <= bullet[i].x) && (bullet[i].x <= (life[j].x2 + life[j].w2)) && (life[j].alive) && (life[j].y2 <= bullet[i].y + 20) && (bullet[i].y < 1050))
-    		{
-    			DestroyAnimation(bullet[i].x, bullet[i].y, 10);
-    			life[j].alive = 0;
-    			bullet[i].firing = 0;
-    			bullet[i].x = 0;
-    			bullet[i].y = 0;
-    			sco += 2;
-    			engine->play2D("life.wav");
-    		}
-    	}
+    for (int i = 0; i < NOL; i++) {
+        for (int j = 0; j < NOL; j++) {
+            life[j].getCollisionInformation();
+            if ((life[j].x2 <= bullet[i].x) && (bullet[i].x <= (life[j].x2 + life[j].w2)) && (life[j].alive) &&
+                (life[j].y2 <= bullet[i].y + 20) && (bullet[i].y < 1080)) {
+                DestroyAnimation(bullet[i].x, bullet[i].y, 20);
+                life[j].alive = 0;
+                bullet[i].firing = 0;
+                bullet[i].x = 0;
+                bullet[i].y = 0;
+                sco += 2;
+                engine->play2D("life.wav");
+            }
+        }
     }
 }
 
@@ -544,7 +529,7 @@ void DrawMenu() //draws menu
     glutSetCursor(GLUT_CURSOR_INHERIT);
     glutMouseFunc(mouse);
     glutKeyboardFunc(keyboard);
-    ShowStars(1);
+    ShowStars(false);
     string line = "-----------------";
     string name = "2D SPACE SHOOTER";
     string play = "PLAY";
@@ -625,7 +610,7 @@ void OverDisplay() //displays text when game is over
 
     string text1 = "GAME OVER";
     string text3 = "Press R to restart";
-    ShowStars(true);
+    ShowStars(false);
     glColor3f(1, 0, 0);
     drawText(text1, 900, 600);
 
@@ -679,7 +664,7 @@ void OverDisplay() //displays text when game is over
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    ShowStars(0);
+    ShowStars(true);
     glutMouseFunc(MouseForGame);
     glutSetCursor(GLUT_CURSOR_NONE);
     glutKeyboardFunc(keyboard);
@@ -742,6 +727,7 @@ int main(int argc, char **argv) {
     glutPassiveMotionFunc(MoveShipWithMouse);
 
     glutFullScreen();
+    glLineWidth(4);
     engine->play2D("sound.mp3", true);
     glutMainLoop();
     engine->drop();

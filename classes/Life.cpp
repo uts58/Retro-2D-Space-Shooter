@@ -13,12 +13,12 @@ public:
     int screen_width = GetSystemMetrics(SM_CXSCREEN);
     int screen_height = GetSystemMetrics(SM_CYSCREEN);
 
-    void getCollisionInformation()   // this function send information about current position
+    void getCollisionInformation()   // this function sends information about current position
     {
-        x2 = x - 10;
-        w2 = 40;
-        y2 = y + 40;
-        h2 = 50;
+        x2 = x;      // Left edge of the heart
+        w2 = 40;     // Width of the heart (from x to x + 40)
+        y2 = y - 25; // Top edge of the heart (from y - 25)
+        h2 = 40;     // Height of the heart (from y - 25 to y + 15)
     }
 
     void init() {
@@ -52,7 +52,22 @@ public:
         glVertex2f(x + 20, y + 5);
 
         glEnd();
+        drawWithBoundingBox();
+    }
 
+    void drawWithBoundingBox() const {
+        float w = 40;     // Width of the bounding box
+        float h = 40;     // Height of the bounding box
+        float yTop = y - 25; // Top edge of the bounding box
+
+        glColor3f(0, 1, 0); // Set color to green, or any color you prefer for the bounding box
+
+        glBegin(GL_LINE_LOOP);
+        glVertex2f(x, yTop);
+        glVertex2f(x + w, yTop);
+        glVertex2f(x + w, yTop + h);
+        glVertex2f(x, yTop + h);
+        glEnd();
     }
 
     void move(GLfloat offset) //this function will be descended the enemy according a give speed which is offset

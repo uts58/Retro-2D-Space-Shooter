@@ -16,7 +16,7 @@ public:
     void getCollisionInformation() {
         x2 = x - 10;
         w2 = 40;
-        y2 = y + 40;
+        y2 = y;
         h2 = 50;
     }
 
@@ -54,6 +54,27 @@ public:
         glVertex2f(x, y);
         glVertex2f(x + 10, y - 10);  // Warhead
         glVertex2f(x + 20, y);
+        glEnd();
+
+        drawWithBoundingBox();
+    }
+
+    void drawWithBoundingBox() const {
+        // Hard-coded height and width values
+        const float w2 = 40;
+        const float h2 = 50;
+
+        // Adjustments for the bounding box
+        float x2 = x - 10;
+        float y2 = y;
+
+        glColor3f(0, 1, 0); // Set color to green for the bounding box
+
+        glBegin(GL_LINE_LOOP);
+        glVertex2f(x2, y2);
+        glVertex2f(x2 + w2, y2);
+        glVertex2f(x2 + w2, y2 + h2);
+        glVertex2f(x2, y2 + h2);
         glEnd();
     }
 

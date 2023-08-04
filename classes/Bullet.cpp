@@ -18,7 +18,7 @@ public:
     void getPosition(MyShip ship)   // takes the position of ship
     {
         x = ship.x + 15;
-        y = ship.y + 35;
+        y = 35;
     }
 
     void fire() {
@@ -28,7 +28,6 @@ public:
     void draw() const             //draws the bullet
     {
         glColor3f(1, 0, 0);
-        glLineWidth(3);
         glBegin(GL_LINES);
         glVertex2f(x, y);
         glVertex2f(x, y + 10);
