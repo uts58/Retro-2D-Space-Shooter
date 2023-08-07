@@ -6,10 +6,6 @@ public:
     GLfloat x{};
     GLfloat y{};
     int firing;
-    GLfloat x3{};
-    GLfloat y3{};
-    GLfloat w3{};
-    GLfloat h3{};
 
     Bullet() {
         firing = 0;

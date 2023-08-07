@@ -11,6 +11,7 @@
 #include "classes/Enemy.cpp"
 #include "classes/Enemyv2.cpp"
 #include "classes/Life.cpp"
+#include "classes/Points.cpp"
 
 
 using namespace std;
@@ -20,10 +21,8 @@ int screen_width = GetSystemMetrics(SM_CXSCREEN);
 int screen_height = GetSystemMetrics(SM_CYSCREEN);
 
 #define n 1000
-int counter = 0;
 int gameState = 0;
 GLfloat Health = 20;
-int c = 0;
 int NOB;                //Number of Bullets
 const int NOF = 5;              //Number of enemies per frame
 const int NOL = 2;            //NUmber of health per frame
@@ -37,6 +36,14 @@ int speedScore;
 GLfloat falling_speed; //star falling speed for different modes
 
 ISoundEngine *engine = createIrrKlangDevice();
+
+Bullet bullet[n];       //instance of bullet object
+Star star[n];        //star
+MyShip ship;
+Enemy enemy[NOF];            //enemy initialization
+EnemyV2 enemyV2[NOF];        //enemy initialization
+Life life[NOL];            //life
+Points points;
 
 string convertInt(int number) {
     stringstream ss;
@@ -53,23 +60,17 @@ void drawText(const string &text, GLfloat x, GLfloat y) //draw text
     }
 }
 
-Bullet bullet[n];       //instance of bullet object
-Star star[n];        //star
-MyShip ship;
-Enemy enemy[NOF];            //enemy initialization
-EnemyV2 enemyV2[NOF];        //enemy initialization
-Life life[NOL];            //life
 
 void ShowStars(bool moveStars)  //renders the start;
 {
-    for (int i = 0; i < n; i++) {
-        if (star[i].y >= 0) {
-            star[i].show();    //render each object
+    for (auto & i : star) {
+        if (i.y >= 0) {
+            i.show();    //render each object
             if (moveStars)
-                star[i].move(falling_speed);    //moves starts
+                i.move(falling_speed);    //moves starts
         } else {
-            star[i].y = 1080;     //initial y position 500
-            star[i].x = rand() % 1920; //initial x position
+            i.y = 1080;     //initial y position 500
+            i.x = rand() % 1920; //initial x position
         }
     }
 }
@@ -90,8 +91,6 @@ void DrawShip()       //renders the ship object
         ship.DisplayShip(); //it will render the ship object
     }
     FireBulletsIfShot(); //if ship.shot is 1 it sets the bullet ready to shot
-    FireBulletsIfShot(); //if ship.shot is 1 it sets the bullet ready to shot
-
 }
 
 /////////////////////////////////////////////Move Object with mouse////////////////////////////////////////
@@ -122,50 +121,50 @@ void DrawBullet()    //renders bullet
 }
 
 void DrawEnemy() {
-    for (int i = 0; i < NOF; i++) {
-        if (enemy[i].alive)  //as long as the enemy is alive  it will be rendered
+    for (auto &i: enemy) {
+        if (i.alive)  //as long as the enemy is alive  it will be rendered
         {
-            enemy[i].draw();             //render the enemy
-            enemy[i].move(enemySpeed);  //enemies will fall at this speed
-            if (enemy[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
+            i.draw();             //render the enemy
+            i.move(enemySpeed);  //enemies will fall at this speed
+            if (i.y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
             {
-                enemy[i].init();  //initialize
+                i.init();  //initialize
             }
         }
-        if (enemy[i].alive == 0) //if the current enemy is dead it will also be initialized
+        if (i.alive == 0) //if the current enemy is dead it will also be initialized
         {
-            enemy[i].init();
+            i.init();
         }
     }
 
-    for (int i = 0; i < NOF; i++) {
-        if (enemyV2[i].alive)  //as long as the enemy is alive  it will be rendered
+    for (auto &i: enemyV2) {
+        if (i.alive)  //as long as the enemy is alive  it will be rendered
         {
-            enemyV2[i].draw();             //render the enemy
-            enemyV2[i].move(enemySpeed);  //enemies will fall at this speed
-            if (enemyV2[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
+            i.draw();             //render the enemy
+            i.move(enemySpeed);  //enemies will fall at this speed
+            if (i.y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
             {
-                enemyV2[i].init();  //initialize
+                i.init();  //initialize
             }
         }
-        if (enemyV2[i].alive == 0) //if the current enemy is dead it will also be initialized
+        if (i.alive == 0) //if the current enemy is dead it will also be initialized
         {
-            enemyV2[i].init();
+            i.init();
         }
     }
-    for (int i = 0; i < NOL; i++) {
-        if (life[i].alive)  //as long as the enemy is alive  it will be rendered
+    for (auto &i: life) {
+        if (i.alive)  //as long as the enemy is alive  it will be rendered
         {
-            life[i].draw();             //render the enemy
-            life[i].move(enemySpeed);  //enemies will fall at this speed
-            if (life[i].y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
+            i.draw();             //render the enemy
+            i.move(enemySpeed);  //enemies will fall at this speed
+            if (i.y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
             {
-                life[i].init();  //initialize
+                i.init();  //initialize
             }
         }
-        if (life[i].alive == 0) //if the current enemy is dead it will also be initialized
+        if (i.alive == 0) //if the current enemy is dead it will also be initialized
         {
-            life[i].init();
+            i.init();
         }
     }
 
@@ -421,108 +420,6 @@ void MouseForGame(int button, int state, int x, int y) //mouse for menu
     }
 }
 
-void pointIndicator() {
-    //1 point
-    GLfloat x = 800;
-    GLfloat y = 250;
-    glColor3f(0.9, 0.91, 0.98);
-    glBegin(GL_QUADS);
-    glVertex2f(x, y);
-
-    glVertex2f(x + 20, y);       //BODY
-    glVertex2f(x + 20, y + 40);
-    glVertex2f(x, y + 40);
-
-    glEnd();
-    glBegin(GL_POLYGON);
-    glVertex2f(x - 10, y + 30);  //wing 1
-    glVertex2f(x, y + 25);
-    glVertex2f(x, y + 15);
-    glVertex2f(x - 10, y + 20);
-    glEnd();
-    glBegin(GL_QUADS);
-    glVertex2f(x + 20, y + 20);
-    glVertex2f(x + 30, y + 15);  // wing2
-    glVertex2f(x + 30, y + 25);
-    glVertex2f(x + 20, y + 30);
-    glEnd();
-
-    glColor3f(0, 0, 1);
-
-
-    glBegin(GL_POLYGON);
-    glVertex2f(x, y);
-
-    glVertex2f(x + 10, y - 10);  // warhead
-    //glVertex2f(x+10,y-10);
-    glVertex2f(x + 20, y);
-
-    glEnd();
-
-}
-
-void point1() {
-
-    GLfloat x = 800;
-    GLfloat y = 170;
-    glColor3f(1, 0, 0);
-    glBegin(GL_POLYGON);
-    glVertex2f(x - 5, y + 10);
-    glVertex2f(x - 10, y + 30);
-    glVertex2f(x - 10, y + 10);
-
-    glEnd();
-    glBegin(GL_POLYGON);
-    glVertex2f(x + 20, y + 10);
-    glVertex2f(x + 25, y + 30);
-    glVertex2f(x + 25, y + 10);
-    glEnd();
-
-    glColor3f(0, 0, 1);
-
-
-    glBegin(GL_POLYGON);
-    glVertex2f(x, y);
-    glVertex2f(x + 15, y);
-    glVertex2f(x + 20, y + 10);
-    glVertex2f(x + 15, y + 40);
-    glVertex2f(x, y + 40);
-    glVertex2f(x - 5, y + 10);
-
-
-    glEnd();
-
-}
-
-void point2() {
-    GLfloat x = 785;
-    GLfloat y = 100;
-
-    glColor3f(1, 0, 0);
-
-
-    glBegin(GL_POLYGON);
-    glVertex2f(x, y);
-    glVertex2f(x + 20, y - 25);
-    glVertex2f(x + 20, y + 5);
-    glVertex2f(x + 15, y + 15);
-    glVertex2f(x + 5, y + 15);
-    glVertex2f(x, y + 10);
-
-    glEnd();
-
-    glBegin(GL_POLYGON);
-
-    glVertex2f(x + 20, y - 25);
-    glVertex2f(x + 40, y);
-    glVertex2f(x + 40, y + 10);
-    glVertex2f(x + 35, y + 15);
-    glVertex2f(x + 25, y + 15);
-    glVertex2f(x + 20, y + 5);
-
-    glEnd();
-
-}
 
 void DrawMenu() //draws menu
 {
@@ -592,9 +489,9 @@ void DrawMenu() //draws menu
     glVertex2f(850, 620);
     glEnd();
 
-    point1();
-    point2();
-    pointIndicator();
+    points.point1();
+    points.point2();
+    points.pointIndicator();
     glFlush();
     glutSwapBuffers();
 

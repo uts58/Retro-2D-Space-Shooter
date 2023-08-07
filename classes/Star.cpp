@@ -3,8 +3,8 @@
 class Star {
 public:
 
-    int screen_width = GetSystemMetrics(SM_CXSCREEN);
-    int screen_height = GetSystemMetrics(SM_CYSCREEN);
+    int screen_width = 1920;
+    int screen_height = 1080;
 
     float x = rand() % screen_width;
     float y = rand() % screen_height;
@@ -17,12 +17,10 @@ public:
 
     void show() const // draws the star
     {
-        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glPointSize(1);
         glColor3f(1, 1, 1);
         glBegin(GL_POINTS);
         glVertex2f(x, y);
         glEnd();
-        // glFlush();
     }
 };

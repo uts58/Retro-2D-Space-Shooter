@@ -1,32 +1,18 @@
-#include "../includes/freeglut/include/GL/glut.h"
+//#include "../includes/freeglut/include/GL/glut.h"
+#include "GameObject.cpp"
 
-class Enemy {
+class Enemy : public GameObject {
 public:
-    GLfloat x{};         // Initial position of x-coordinate of enemy spaceship
-    GLfloat y{};         // Initial position of y-coordinate of enemy spaceship
-    int alive{};  // This variable indicates whether the enemy is alive or not. 0 means alive, 1 means dead
-    GLfloat x2{};        // x2 coordinate used for collision detection
-    GLfloat y2{};        // y2 coordinate used for collision detection
-    GLfloat w2{};        // Width of the object
-    GLfloat h2{};        // Height of the object
 
-    int screen_width = GetSystemMetrics(SM_CXSCREEN);
-    int screen_height = GetSystemMetrics(SM_CYSCREEN);
-
-    void getCollisionInformation() {
+    void getCollisionInformation() override {
         x2 = x - 10;
         w2 = 40;
         y2 = y;
         h2 = 50;
     }
 
-    void init() {
-        x = rand() % screen_width;
-        y = screen_height;
-        alive = 1;
-    }
 
-    void draw() const {
+    void draw() const override {
         glColor3f(0.9, 0.91, 0.98);
         glBegin(GL_QUADS);
         glVertex2f(x, y);
@@ -55,11 +41,10 @@ public:
         glVertex2f(x + 10, y - 10);  // Warhead
         glVertex2f(x + 20, y);
         glEnd();
-
-        drawWithBoundingBox();
+//        drawWithBoundingBox();
     }
 
-    void drawWithBoundingBox() const {
+    void drawWithBoundingBox() const override {
         // Hard-coded height and width values
         const float w2 = 40;
         const float h2 = 50;
@@ -76,9 +61,5 @@ public:
         glVertex2f(x2 + w2, y2 + h2);
         glVertex2f(x2, y2 + h2);
         glEnd();
-    }
-
-    void move(GLfloat offset) {
-        y -= offset;  // Move the enemy downwards according to the given speed (offset)
     }
 };
