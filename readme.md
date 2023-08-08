@@ -15,5 +15,5 @@ This game was initially crafted in 2016 as one of my early school projects. Over
 
 ## Game Glimpses
 
-<a href="url"><img src="https://i.ibb.co/qs9k6bb/image.png" height="400" width="700" ></a>
-<a href="url"><img src="https://i.ibb.co/R73jDVg/image.png" height="400" width="700" ></a>
+![Gameplay Capture 1](https://i.ibb.co/qs9k6bb/image.png)
+![Gameplay Capture 2](https://i.ibb.co/R73jDVg/image.png)
