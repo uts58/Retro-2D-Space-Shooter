@@ -35,8 +35,19 @@ bool isSpeedMode;
 int speedScore;
 GLfloat falling_speed; //star falling speed for different modes
 
-ISoundEngine *engine = createIrrKlangDevice();
+/////////////////////////////////////////////////////////////////////
+GLfloat twicePi = 2.0f * 3.1416;
+struct Color {
+    GLfloat r, g, b;
+};
+const Color YELLOW = {245.0/255, 249.0/255, 0};
+const Color RED = {244.0/255, 2.0/255, 2.0/255};
+const Color ORANGE1 = {244.0/255, 152.0/255, 66.0/255};
+const Color ORANGE2 = {244.0/255, 107.0/255, 65.0/255};
+////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////
+ISoundEngine *engine = createIrrKlangDevice();
 Bullet bullet[n];       //instance of bullet object
 Star star[n];        //star
 MyShip ship;
@@ -44,26 +55,23 @@ Enemy enemy[NOF];            //enemy initialization
 EnemyV2 enemyV2[NOF];        //enemy initialization
 Life life[NOL];            //life
 Points points;
+/////////////////////////////////////////////////////////////////////
 
 string convertInt(int number) {
-    stringstream ss;
-    ss << number;
-    return ss.str();
+    return to_string(number);
 }
 
-
-void drawText(const string &text, GLfloat x, GLfloat y) //draw text
-{
+void drawText(const string &text, GLfloat x, GLfloat y) {
     glRasterPos2f(x, y);
-    for (char i: text) {
+    for (const char i: text) {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, (int) i);
     }
 }
 
 
-void ShowStars(bool moveStars)  //renders the start;
-{
-    for (auto & i : star) {
+void ShowStars(bool moveStars){
+    //renders the start;
+    for (auto &i: star) {
         if (i.y >= 0) {
             i.show();    //render each object
             if (moveStars)
@@ -84,98 +92,66 @@ void FireBulletsIfShot() {
     }
 }
 
-void DrawShip()       //renders the ship object
-{
-    if (ship.alive) //as long as the ship is alive
-    {
-        ship.DisplayShip(); //it will render the ship object
+void DrawShip() {
+    if (ship.alive) {
+        ship.DisplayShip();
     }
-    FireBulletsIfShot(); //if ship.shot is 1 it sets the bullet ready to shot
+    FireBulletsIfShot();
 }
 
 /////////////////////////////////////////////Move Object with mouse////////////////////////////////////////
-void MoveShipWithMouse(int x, int y)  //takes the current position of mouse and sets the ship according to that
-{
+void MoveShipWithMouse(int x, int y){
+    //takes the current position of mouse and sets the ship according to that
     ship.x = x;
     ship.y = y;
     glutPostRedisplay();
 }
 
-void DrawBullet()    //renders bullet
-{
-    int i;
-    for (i = 0; i < NOB; i++) {
-        if (bullet[i].firing) {
-            bullet[i].draw(); //renders
-            bullet[i].move(bulletSpeed); //move
+void DrawBullet() {
+    for (auto &b: bullet) {
+        if (b.firing) {
+            b.draw();
+            b.move(bulletSpeed);
         }
-        if (bullet[i].y > 1080) {
-            bullet[i].ReInit();  //resets the bullet object when it goes beyond the screen
 
+        if (b.y > 1080) {
+            b.ReInit();
         }
     }
-    if (NOB > 50)  // number of bullets can never go beyond 30
-    {
-        NOB = 0;
+    // The logic for NOB seems a bit unclear; if it's a constant, it shouldn't be modified.
+    // Otherwise, reconsider how it's being used.
+}
+
+//////////Draw enemies///////////////////////////////////
+template<typename T>
+void drawAndMoveEntities(T &entities) {
+    for (auto &i: entities) {
+        if (i.alive) {
+            i.draw();
+            i.move(enemySpeed);
+
+            if (i.y - 10 < 0 || i.alive == 0) {
+                i.init();
+            }
+        } else if (i.alive == 0) {
+            i.init();
+        }
     }
 }
 
 void DrawEnemy() {
-    for (auto &i: enemy) {
-        if (i.alive)  //as long as the enemy is alive  it will be rendered
-        {
-            i.draw();             //render the enemy
-            i.move(enemySpeed);  //enemies will fall at this speed
-            if (i.y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
-            {
-                i.init();  //initialize
-            }
-        }
-        if (i.alive == 0) //if the current enemy is dead it will also be initialized
-        {
-            i.init();
-        }
-    }
-
-    for (auto &i: enemyV2) {
-        if (i.alive)  //as long as the enemy is alive  it will be rendered
-        {
-            i.draw();             //render the enemy
-            i.move(enemySpeed);  //enemies will fall at this speed
-            if (i.y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
-            {
-                i.init();  //initialize
-            }
-        }
-        if (i.alive == 0) //if the current enemy is dead it will also be initialized
-        {
-            i.init();
-        }
-    }
-    for (auto &i: life) {
-        if (i.alive)  //as long as the enemy is alive  it will be rendered
-        {
-            i.draw();             //render the enemy
-            i.move(enemySpeed);  //enemies will fall at this speed
-            if (i.y - 10 < 0)  //when the y coordinate of y will be 0 new enemies will be initialized
-            {
-                i.init();  //initialize
-            }
-        }
-        if (i.alive == 0) //if the current enemy is dead it will also be initialized
-        {
-            i.init();
-        }
-    }
-
+    drawAndMoveEntities(enemy);
+    drawAndMoveEntities(enemyV2);
+    drawAndMoveEntities(life);
 }
+/////////////////////////////////////////////////////////////////
+
 
 /////////Destroy animation//////////
-void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius, GLfloat triangleAmount = 20) {
+void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius, Color color, GLfloat triangleAmount = 20) {
+    glColor3f(color.r, color.g, color.b);
     glBegin(GL_TRIANGLE_FAN);
     glVertex2f(x, y); // Center of the circle
-
-    GLfloat twicePi = 2.0f * 3.1416; // Use M_PI constant from math library for better precision
 
     for (int i = 0; i <= triangleAmount; i++) {
         GLfloat angle = i * twicePi / triangleAmount;
@@ -187,21 +163,74 @@ void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius, GLfloat triangleAmou
     glEnd();
 }
 
-void DestroyAnimation(GLfloat x, GLfloat y, GLfloat radius) {    //center circle
-    glColor3ub(245, 249, 0);
-    drawFilledCircle(x, y, radius + 3);
-    //side circles
-    glColor3ub(244, 2, 2);
-    drawFilledCircle(x + 10, y + 10, radius - 5);
-    glColor3ub(244, 152, 66);
-    drawFilledCircle(x - 10, y + 10, radius - 3);
-    glColor3ub(244, 2, 2);
-    drawFilledCircle(x - 10, y - 10, radius);
-    glColor3ub(244, 107, 65);
-    drawFilledCircle(x + 10, y - 10, radius - 2);
+void DestroyAnimation(GLfloat x, GLfloat y, GLfloat radius) {
+    drawFilledCircle(x, y, radius + 3, YELLOW);
+    drawFilledCircle(x + 10, y + 10, radius - 5, RED);
+    drawFilledCircle(x - 10, y + 10, radius - 3, ORANGE1);
+    drawFilledCircle(x - 10, y - 10, radius, RED);
+    drawFilledCircle(x + 10, y - 10, radius - 2, ORANGE2);
 }
 
 ///////////////////////////////////////////////
+
+////////////////////////Collision detection of enemy with space ship/////////////////////////////////////
+template<typename T>
+void checkCollisionWithEntity(T *entities, int size, int healthDelta) {
+    ship.information_for_collision();
+
+    for (int i = 0; i < size; i++) {
+        entities[i].getCollisionInformation();
+
+        if ((ship.x1 < (entities[i].x2 + entities[i].w2)) &&
+            (entities[i].x2 < ship.x1 + ship.w1) &&
+            (ship.y1 + ship.h1 == entities[i].y2 - entities[i].h2)) {
+
+            Health += healthDelta;
+        }
+    }
+}
+
+void CollisionShip() {
+    checkCollisionWithEntity(enemy, NOF, -5);
+    checkCollisionWithEntity(enemyV2, NOF, -5);
+    checkCollisionWithEntity(life, NOL, (Health < 20) ? 5 : 0);
+}
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////Collision detection for bullet and enemy//////////////////////
+template<typename T>
+void checkBulletCollisionWithEntity(T *entities, int entityCount, int bulletCount, int scoreIncrement,
+                                    const char *soundFile) {
+    for (int i = 0; i < bulletCount; i++) {
+        for (int j = 0; j < entityCount; j++) {
+            entities[j].getCollisionInformation();
+
+            if ((entities[j].x2 <= bullet[i].x) &&
+                (bullet[i].x <= (entities[j].x2 + entities[j].w2)) &&
+                (entities[j].alive) &&
+                (entities[j].y2 <= bullet[i].y + 20) &&
+                (bullet[i].y < 1080)) {
+
+                DestroyAnimation(bullet[i].x, bullet[i].y, 20);
+                entities[j].alive = 0;
+                bullet[i].firing = 0;
+                bullet[i].x = 0;
+                bullet[i].y = 0;
+                sco += scoreIncrement;
+                engine->play2D(soundFile);
+            }
+        }
+    }
+}
+
+void BulletsVsEnemyCollisionTest() {
+    checkBulletCollisionWithEntity(enemy, NOF, NOB, 1, "explosion1.wav");
+    checkBulletCollisionWithEntity(enemyV2, NOF, NOB, 2, "explosion2.mp3");
+    checkBulletCollisionWithEntity(life, NOL, NOB, 2, "life.wav");
+}
+/////////////////////////////////////////////////////////////////////////////////
+
+
 void DisplayHealth(GLfloat health) {
     health = health * 10;
     glColor3f(1, 0, 0);
@@ -221,97 +250,9 @@ void DisplayHealth(GLfloat health) {
 
     glFlush();
 }
-
-////////////////////////Collision detection of enemy with space ship/////////////////////////////////////
-void CollisionShip() {
-    for (int i = 0; i < NOF; i++) {
-        enemy[i].getCollisionInformation();
-        ship.information_for_collision();
-
-        if ((ship.x1 < (enemy[i].x2 + enemy[i].w2)) && (enemy[i].x2 < ship.x1 + ship.w1) &&
-            ((ship.y1 + ship.h1 == enemy[i].y2 - enemy[i].h2))) {
-            Health = Health - 5;
-        }
-    }
-    for (int i = 0; i < NOF; i++) {
-        enemyV2[i].getCollisionInformation();
-        ship.information_for_collision();
-
-        if ((ship.x1 < (enemyV2[i].x2 + enemyV2[i].w2)) && (enemyV2[i].x2 < ship.x1 + ship.w1) &&
-            ((ship.y1 + ship.h1 == enemyV2[i].y2 - enemyV2[i].h2))) {
-            Health = Health - 5;
-        }
-    }
-    for (int i = 0; i < NOL; i++) {
-        life[i].getCollisionInformation();
-        ship.information_for_collision();
-
-        if ((ship.x1 < (life[i].x2 + life[i].w2)) && (life[i].x2 < ship.x1 + ship.w1) &&
-            ((ship.y1 + ship.h1 == life[i].y2 - life[i].h2))) {
-            if (Health < 20) {
-                Health = Health + 5;
-            }
-        }
-    }
-}
-
-
-/////////////////////////////////////Collision detection for bullet and enemy//////////////////////
-void BulletsVsEnemyCollisionTest() {
-    for (int i = 0; i < NOB; i++) {
-        for (int j = 0; j < NOF; j++) {
-            enemy[j].getCollisionInformation();
-            if ((enemy[j].x2 <= bullet[i].x) && (bullet[i].x <= (enemy[j].x2 + enemy[j].w2)) && (enemy[j].alive) &&
-                (enemy[j].y2 <= bullet[i].y + 20) &&
-                (bullet[i].y < 1080)) {
-                DestroyAnimation(bullet[i].x + 3, bullet[i].y + 3, 20);
-                enemy[j].alive = 0;
-                bullet[i].firing = 0;
-                bullet[i].x = 0;
-                bullet[i].y = 0;
-                sco += 1;
-                engine->play2D("explosion1.wav");
-            }
-        }
-    }
-
-    for (int i = 0; i < NOB; i++) {
-        for (int j = 0; j < NOF; j++) {
-            enemyV2[j].getCollisionInformation();
-            if ((enemyV2[j].x2 <= bullet[i].x) && (bullet[i].x <= (enemyV2[j].x2 + enemyV2[j].w2)) &&
-                (enemyV2[j].alive) &&
-                (enemyV2[j].y2 <= bullet[i].y + 20) && (bullet[i].y < 1080)) {
-                DestroyAnimation(bullet[i].x, bullet[i].y, 20);
-                enemyV2[j].alive = 0;
-                bullet[i].firing = 0;
-                bullet[i].x = 0;
-                bullet[i].y = 0;
-                sco += 2;
-                engine->play2D("explosion2.mp3");
-
-            }
-        }
-    }
-    for (int i = 0; i < NOL; i++) {
-        for (int j = 0; j < NOL; j++) {
-            life[j].getCollisionInformation();
-            if ((life[j].x2 <= bullet[i].x) && (bullet[i].x <= (life[j].x2 + life[j].w2)) && (life[j].alive) &&
-                (life[j].y2 <= bullet[i].y + 20) && (bullet[i].y < 1080)) {
-                DestroyAnimation(bullet[i].x, bullet[i].y, 20);
-                life[j].alive = 0;
-                bullet[i].firing = 0;
-                bullet[i].x = 0;
-                bullet[i].y = 0;
-                sco += 2;
-                engine->play2D("life.wav");
-            }
-        }
-    }
-}
-
-
 void Reinitialization() {
     ship.Reset();
+    NOB = 0;
     Health = 20;
     int i;
     for (i = 0; i < NOF; i++) {
@@ -330,176 +271,154 @@ void update(int value) {
     ship.alive = 0;
 }
 
-void GameMode(const string &mode) //gamemode
-{
-    if (mode == "slow") {
-        enemySpeed = 0.1;
-        falling_speed = 0.5;
-        isSpeedMode = false;
-    } else if (mode == "speedy") {
-        enemySpeed = 1;
-        isSpeedMode = true;
-        falling_speed = 1;
+// This function can be used in both 'slow' and 'speedy' modes to avoid repetition.
+void setGameModeAttributes(GLfloat eSpeed, GLfloat fallSpeed, bool speedMode) {
+    enemySpeed = eSpeed;
+    falling_speed = fallSpeed;
+    isSpeedMode = speedMode;
+    if (speedMode) {
         glutTimerFunc(10000, update, 0);
     }
 }
 
+void GameMode(const string &mode) {
+    if (mode == "slow") {
+        setGameModeAttributes(0.1, 0.5, false);
+    } else if (mode == "speedy") {
+        setGameModeAttributes(1, 1, true);
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////
+void shootIfShipAlive() {
+    if (ship.alive) {
+        ship.shoot = 1;
+        NOB++;
+    }
+}
 void keyboard(unsigned char key, int x, int y) {
-    switch (key) {
+    switch (tolower(key)) {
         case 'f':
-        case 'F':
-            if (ship.alive) {
-                ship.shoot = 1;
-                NOB++;
-            }
+            shootIfShipAlive();
             break;
-
-        case 'L':
         case 'l':
-            ship.x = ship.x + 10;
+            ship.x += 10;
             break;
-
-        case 'J':
         case 'j':
-            ship.x = ship.x - 10;
+            ship.x -= 10;
             break;
-
         case 'r':
-        case 'R':
-            if (ship.alive == 0) {
+            if (!ship.alive) {
                 Reinitialization();
-
                 gameState = 1;
-                if (isSpeedMode) {
-                    GameMode("speedy");
-                    sco = 0;
-                } else {
-                    GameMode("slow");
-                    sco = 0;
-                }
+                GameMode(isSpeedMode ? "speedy" : "slow");
+                sco = 0;
             }
             break;
-
-        case 27:
+        case 27:  // Escape key
             gameState = 0;
             break;
-
     }
     glutPostRedisplay();
 }
 
 
-void mouse(int button, int state, int x, int y) //mouse for menu
-{
-    if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
-        if ((x > 850) && (x < 1100) && (y > 620) && (y < 670)) {
+void mouse(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        if (x > 850 && x < 1100 && y > 620 && y < 670) {
             exit(0);
-        } else if ((x > 900) && (x < 1050) && (y > 560) && (y < 600)) {
+        } else if (x > 900 && x < 1050) {
             gameState = 1;
-            GameMode("speedy");
+            if (y > 560 && y < 600) {
+                GameMode("speedy");
+            } else if (y > 500 && y < 540) {
+                GameMode("slow");
+            }
             Reinitialization();
-            NOB = 0;
-        } else if ((x > 900) && (x < 1050) && (y > 500) && (y < 540)) {
-            gameState = 1;
-            GameMode("slow");
-            Reinitialization();
-            NOB = 0;
         }
     }
 }
 
 void MouseDummy(int button, int state, int x, int y) {}
 
-void MouseForGame(int button, int state, int x, int y) //mouse for menu
-{
-    if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
-        if (ship.alive) {
-            ship.shoot = 1;
-            NOB++;
-        }
+void MouseForGame(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        shootIfShipAlive();
     }
 }
 
+///////////////////// MENU///////////////////////////////
+// Helper function to draw rectangle wrappers
+void drawWrapper(float x1, float y1, float x2, float y2) {
+    glBegin(GL_LINE_STRIP);
+    glVertex2f(x1, y1);
+    glVertex2f(x2, y1);
+    glVertex2f(x2, y2);
+    glVertex2f(x1, y2);
+    glVertex2f(x1, y1);
+    glEnd();
+}
 
 void DrawMenu() //draws menu
 {
+    // Set OpenGL state and callbacks
     glutSetCursor(GLUT_CURSOR_INHERIT);
     glutMouseFunc(mouse);
     glutKeyboardFunc(keyboard);
-    ShowStars(false);
-    string line = "-----------------";
-    string name = "2D SPACE SHOOTER";
-    string play = "PLAY";
-    string slow = "#  SLOW";
-    string speedy = "#  SPEEDY    (10 sec)";
-    string p1 = ": +1 point";
-    string p2 = ": +2 point";
-    string p3 = ": +5 health";
 
-    string note1 = "SLOW: Normal mode!";
-    string note2 = "SPEEDY: Un-alive most enemy in 10 Second! No health penalty!";
-    string instruction = "Instruction: Press 'F' to shoot, move mouse to control ship ";
-    char quit[6] = "QUIT";
+    // Clear and set drawing color
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glColor3f(1.0, 0.0, 0.0);
-    drawText(line, 850, 680);
-    drawText(name, 850, 700);
-    drawText(play, 940, 635);
-    drawText(slow, 920, 575);
-    drawText(speedy, 920, 510);
-    drawText(quit, 940, 445);
-    drawText(note1, 800, 390);
-    drawText(note2, 800, 350);
-    drawText(instruction, 800, 310);
-    drawText(p1, 860, 260);
-    drawText(p2, 860, 180);
-    drawText(p3, 860, 95);
-    //play wrapper
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(850, 430);
-    glVertex2f(1100, 430);
-    glVertex2f(1100, 480);
-    glVertex2f(850, 480);
-    glVertex2f(850, 430);
-    glEnd();
 
-    //easy wrapper
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(900, 560);
-    glVertex2f(1050, 560);
-    glVertex2f(1050, 600);
-    glVertex2f(900, 600);
-    glVertex2f(900, 560);
-    glEnd();
+    // Draw background and other menu components
+    ShowStars(false);
 
-    //hard wrapper
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(900, 540);
-    glVertex2f(1050, 540);
-    glVertex2f(1050, 500);
-    glVertex2f(900, 500);
-    glVertex2f(900, 540);
-    glEnd();
+    drawText("2D SPACE SHOOTER", 850, 700);
+    drawText("-----------------", 850, 680);
+    drawText("PLAY", 940, 635);
+    drawText("#  SLOW", 920, 575);
+    drawText("#  SPEEDY    (10 sec)", 920, 510);
+    drawText("QUIT", 940, 445);
+    drawText("SLOW: Normal mode!", 800, 390);
+    drawText("SPEEDY: Un-alive most enemy in 10 Second! No health penalty!", 800, 350);
+    drawText("Instruction: Press 'F' to shoot, move mouse to control ship ", 800, 310);
+    drawText(": +1 point", 860, 260);
+    drawText(": +2 point", 860, 180);
+    drawText(": +5 health", 860, 95);
 
-    //quit wrapper
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(850, 620);
-    glVertex2f(1100, 620);
-    glVertex2f(1100, 670);
-    glVertex2f(850, 670);
-    glVertex2f(850, 620);
-    glEnd();
+    // Draw button wrappers
+    drawWrapper(850, 430, 1100, 480);  // Play wrapper
+    drawWrapper(900, 560, 1050, 600);  // Easy wrapper
+    drawWrapper(900, 540, 1050, 500);  // Hard wrapper
+    drawWrapper(850, 620, 1100, 670);  // Quit wrapper
 
-    points.point1();
+    Points::point1();
     points.point2();
     points.pointIndicator();
+
+    // Swap buffers and display
     glFlush();
     glutSwapBuffers();
+}
+/////////////////////////////////////////////////////////
 
+// Helper function to read high scores from a file
+int readHighScore(const string& filename) {
+    fstream myfile(filename, ios_base::in);
+    int score;
+    myfile >> score;
+    myfile.close();
+    return score;
 }
 
+// Helper function to write high scores to a file
+void writeHighScore(const string& filename, int score) {
+    fstream myfile(filename, ios_base::out);
+    myfile << convertInt(score) << endl;
+    myfile.close();
+}
 
-void OverDisplay() //displays text when game is over
-{
+// The refactored OverDisplay function
+void OverDisplay() {
     glutKeyboardFunc(keyboard);
     glutMouseFunc(MouseDummy);
     glutSetCursor(GLUT_CURSOR_INHERIT);
@@ -521,31 +440,19 @@ void OverDisplay() //displays text when game is over
     string text2;
     string highscoreText;
     if (!isSpeedMode) {
-        fstream myfile("highscoreNText.txt", ios_base::in);
-        myfile >> highScoreForNormal;
-        myfile.close();
-
+        highScoreForNormal = readHighScore("highscoreNText.txt");
         if (sco > highScoreForNormal) {
-            fstream myfile("highscoreNText.txt", ios_base::out);
-            myfile << convertInt(sco) << endl;
-            myfile.close();
+            writeHighScore("highscoreNText.txt", sco);
             highScoreForNormal = sco;
         }
-
         text2 = "You Scored " + convertInt(sco);
         highscoreText = "High Score for Normal: " + convertInt(highScoreForNormal);
     } else {
-        fstream myfile("highscoreSText.txt", ios_base::in);
-        myfile >> highScoreForSpeed;
-        myfile.close();
-
+        highScoreForSpeed = readHighScore("highscoreSText.txt");
         if (speedScore > highScoreForSpeed) {
-            fstream myfile("highscoreSText.txt", ios_base::out);
-            myfile << convertInt(speedScore) << endl;
-            myfile.close();
+            writeHighScore("highscoreSText.txt", speedScore);
             highScoreForSpeed = speedScore;
         }
-
         text2 = "You Scored " + convertInt(speedScore);
         highscoreText = "High Score for Speed: " + convertInt(highScoreForSpeed);
     }
@@ -560,59 +467,69 @@ void OverDisplay() //displays text when game is over
 
 
 void display() {
+    // Clear the buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Set Display Settings
     ShowStars(true);
     glutMouseFunc(MouseForGame);
     glutSetCursor(GLUT_CURSOR_NONE);
     glutKeyboardFunc(keyboard);
+
+    // Draw Game Elements
     DrawShip();
     DrawEnemy();
     DrawBullet();
+
+    // Handle Collisions
     ship.information_for_collision();
     BulletsVsEnemyCollisionTest();
     CollisionShip();
-    DisplayHealth(Health);
 
-    string sf = "Score :" + convertInt(sco);
-    string ss = "Health :"/* + convertInt(Health)*/;
-    drawText(ss, 10, 1050);
-    drawText(sf, 10, 1020);
+    // Display Game Information
+    DisplayHealth(Health);
+    drawText("Health :", 10, 1050);
+    drawText("Score :" + convertInt(sco), 10, 1020);
+
+    // Check Game State
     if (Health <= 0) {
         ship.alive = 0;
-
         gameState = 2;
     }
+
+    // Update the display
     glFlush();
     glutSwapBuffers();
-
     glutPostRedisplay();
 }
+
 
 
 /////////////////////////////////////////////////////Main Display Function////////////////////////////////////////
 
 void loop() {
+    // OpenGL setup
     glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPointSize(4.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(-25, 1960.0, 0, 1080.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Rendering based on game state
     switch (gameState) {
-        case 0:
-            DrawMenu();
-            break;
         case 1:
             display();
             break;
         case 2:
             OverDisplay();
             break;
-        default:
+        default: // For both case 0 and any unexpected value
             DrawMenu();
             break;
     }
 }
+
 
 
 int main(int argc, char **argv) {

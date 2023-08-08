@@ -1,0 +1,3 @@
+C:/Users/utsha.saha/CLionProjects/space-shooter/cmake-build-debug-visual-studio/CMakeFiles/space_shooter.dir
+C:/Users/utsha.saha/CLionProjects/space-shooter/cmake-build-debug-visual-studio/CMakeFiles/edit_cache.dir
+C:/Users/utsha.saha/CLionProjects/space-shooter/cmake-build-debug-visual-studio/CMakeFiles/rebuild_cache.dir
