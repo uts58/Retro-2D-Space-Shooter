@@ -28,12 +28,12 @@ public:
 
     void move_left(GLfloat offset)     //moves the object left
     {
-        x = x - offset;
+        x -= offset;
     }
 
     void move_right(GLfloat offset)    //right
     {
-        x = x + offset;
+        x += offset;
     }
 
     void DisplayShip() const {
@@ -79,6 +79,26 @@ public:
         glEnd();
 //        drawBoundingBox();
 //        drawMouseBoundingBox();
+    }
+
+    static void DisplayHealth(GLfloat health) {
+        health = health * 10;
+        glColor3f(1, 0, 0);
+        glBegin(GL_POLYGON);
+        glVertex2f(110, 1070);
+        glVertex2f(110 + health, 1070);
+        glVertex2f(110 + health, 1050);
+        glVertex2f(110, 1050);
+        glEnd();
+
+        glBegin(GL_LINE_LOOP);
+        glVertex2f(110, 1070);
+        glVertex2f(110 + 200, 1070);
+        glVertex2f(110 + 200, 1050);
+        glVertex2f(110, 1050);
+        glEnd();
+
+        glFlush();
     }
 
     void drawBoundingBox() {

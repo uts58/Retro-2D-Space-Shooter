@@ -25,7 +25,7 @@ int gameState = 0;
 GLfloat Health = 20;
 int NOB;                //Number of Bullets
 const int NOF = 5;              //Number of enemies per frame
-const int NOL = 2;            //NUmber of health per frame
+const int NOL = 1;            //NUmber of health per frame
 GLfloat enemySpeed = 5;   // speed at which enemy will fall
 int sco = 0;
 int highScoreForNormal = 0;
@@ -40,10 +40,10 @@ GLfloat twicePi = 2.0f * 3.1416;
 struct Color {
     GLfloat r, g, b;
 };
-const Color YELLOW = {245.0/255, 249.0/255, 0};
-const Color RED = {244.0/255, 2.0/255, 2.0/255};
-const Color ORANGE1 = {244.0/255, 152.0/255, 66.0/255};
-const Color ORANGE2 = {244.0/255, 107.0/255, 65.0/255};
+const Color YELLOW = {245.0 / 255, 249.0 / 255, 0};
+const Color RED = {244.0 / 255, 2.0 / 255, 2.0 / 255};
+const Color ORANGE1 = {244.0 / 255, 152.0 / 255, 66.0 / 255};
+const Color ORANGE2 = {244.0 / 255, 107.0 / 255, 65.0 / 255};
 ////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////
@@ -54,7 +54,6 @@ MyShip ship;
 Enemy enemy[NOF];            //enemy initialization
 EnemyV2 enemyV2[NOF];        //enemy initialization
 Life life[NOL];            //life
-Points points;
 /////////////////////////////////////////////////////////////////////
 
 string convertInt(int number) {
@@ -69,7 +68,7 @@ void drawText(const string &text, GLfloat x, GLfloat y) {
 }
 
 
-void ShowStars(bool moveStars){
+void ShowStars(bool moveStars) {
     //renders the start;
     for (auto &i: star) {
         if (i.y >= 0) {
@@ -99,13 +98,6 @@ void DrawShip() {
     FireBulletsIfShot();
 }
 
-/////////////////////////////////////////////Move Object with mouse////////////////////////////////////////
-void MoveShipWithMouse(int x, int y){
-    //takes the current position of mouse and sets the ship according to that
-    ship.x = x;
-    ship.y = y;
-    glutPostRedisplay();
-}
 
 void DrawBullet() {
     for (auto &b: bullet) {
@@ -226,47 +218,26 @@ void checkBulletCollisionWithEntity(T *entities, int entityCount, int bulletCoun
 void BulletsVsEnemyCollisionTest() {
     checkBulletCollisionWithEntity(enemy, NOF, NOB, 1, "explosion1.wav");
     checkBulletCollisionWithEntity(enemyV2, NOF, NOB, 2, "explosion2.mp3");
-    checkBulletCollisionWithEntity(life, NOL, NOB, 2, "life.wav");
+    checkBulletCollisionWithEntity(life, NOL, NOB, 1, "life.wav");
 }
 /////////////////////////////////////////////////////////////////////////////////
 
 
-void DisplayHealth(GLfloat health) {
-    health = health * 10;
-    glColor3f(1, 0, 0);
-    glBegin(GL_POLYGON);
-    glVertex2f(110, 1070);
-    glVertex2f(110 + health, 1070);
-    glVertex2f(110 + health, 1050);
-    glVertex2f(110, 1050);
-    glEnd();
-
-    glBegin(GL_LINE_LOOP);
-    glVertex2f(110, 1070);
-    glVertex2f(110 + 200, 1070);
-    glVertex2f(110 + 200, 1050);
-    glVertex2f(110, 1050);
-    glEnd();
-
-    glFlush();
-}
 void Reinitialization() {
     ship.Reset();
     NOB = 0;
     Health = 20;
-    int i;
-    for (i = 0; i < NOF; i++) {
-        enemy[i].init();
+    for (auto & i : enemy) {
+        i.init();
     }
 }
 
 /////////////////////////////////////////Keyboard/////////////////////////////////////////
 
-void update(int value) {
+void SpeedyModeCallBack(int value) {
     Reinitialization();
     speedScore = sco;
     sco = 0;
-    NOB = 0;
     gameState = 2;
     ship.alive = 0;
 }
@@ -277,7 +248,7 @@ void setGameModeAttributes(GLfloat eSpeed, GLfloat fallSpeed, bool speedMode) {
     falling_speed = fallSpeed;
     isSpeedMode = speedMode;
     if (speedMode) {
-        glutTimerFunc(10000, update, 0);
+        glutTimerFunc(10000, SpeedyModeCallBack, 0);
     }
 }
 
@@ -288,6 +259,7 @@ void GameMode(const string &mode) {
         setGameModeAttributes(1, 1, true);
     }
 }
+
 ///////////////////////////////////////////////////////////////////////////////////
 void shootIfShipAlive() {
     if (ship.alive) {
@@ -295,6 +267,7 @@ void shootIfShipAlive() {
         NOB++;
     }
 }
+
 void keyboard(unsigned char key, int x, int y) {
     switch (tolower(key)) {
         case 'f':
@@ -346,6 +319,14 @@ void MouseForGame(int button, int state, int x, int y) {
     }
 }
 
+/////////////////////////////////////////////Move Object with mouse////////////////////////////////////////
+void MoveShipWithMouse(int x, int y) {
+    //takes the current position of mouse and sets the ship according to that
+    ship.x = x;
+    ship.y = y;
+    glutPostRedisplay();
+}
+
 ///////////////////// MENU///////////////////////////////
 // Helper function to draw rectangle wrappers
 void drawWrapper(float x1, float y1, float x2, float y2) {
@@ -392,8 +373,8 @@ void DrawMenu() //draws menu
     drawWrapper(850, 620, 1100, 670);  // Quit wrapper
 
     Points::point1();
-    points.point2();
-    points.pointIndicator();
+    Points::point2();
+    Points::pointIndicator();
 
     // Swap buffers and display
     glFlush();
@@ -402,7 +383,7 @@ void DrawMenu() //draws menu
 /////////////////////////////////////////////////////////
 
 // Helper function to read high scores from a file
-int readHighScore(const string& filename) {
+int readHighScore(const string &filename) {
     fstream myfile(filename, ios_base::in);
     int score;
     myfile >> score;
@@ -411,7 +392,7 @@ int readHighScore(const string& filename) {
 }
 
 // Helper function to write high scores to a file
-void writeHighScore(const string& filename, int score) {
+void writeHighScore(const string &filename, int score) {
     fstream myfile(filename, ios_base::out);
     myfile << convertInt(score) << endl;
     myfile.close();
@@ -487,7 +468,7 @@ void display() {
     CollisionShip();
 
     // Display Game Information
-    DisplayHealth(Health);
+    MyShip::DisplayHealth(Health);
     drawText("Health :", 10, 1050);
     drawText("Score :" + convertInt(sco), 10, 1020);
 
@@ -529,7 +510,6 @@ void loop() {
             break;
     }
 }
-
 
 
 int main(int argc, char **argv) {
