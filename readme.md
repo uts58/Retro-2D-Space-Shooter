@@ -17,3 +17,5 @@ This game was initially crafted in 2016 as one of my early school projects. Over
 
 ![Gameplay Capture 1](https://i.ibb.co/qs9k6bb/image.png)
 ![Gameplay Capture 2](https://i.ibb.co/R73jDVg/image.png)
+
+## Have fun!!
